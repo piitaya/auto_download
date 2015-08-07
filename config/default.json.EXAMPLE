@@ -1,0 +1,14 @@
+{
+  // Synology module configs
+  "Synology": {
+    "url": {
+      "protocol": "http",
+      "host": "192.168.0.x",
+      "port": "5000"
+    },
+    "account": {
+      "user": "user",
+      "password": "password"
+    }
+  }
+}
