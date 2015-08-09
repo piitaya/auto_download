@@ -1,7 +1,10 @@
 var request = require('request-promise');
-var Syno = require('syno');
-var config = require('config');
 
+var config = require('config');
+var Syno = require('syno');
+var MovieDB = require('moviedb');
+
+var mdb = MovieDB(config.get('MovieDB.api.key'));
 var syno = new Syno({
     // Requests protocol : 'http' or 'https' (default: http)
     protocol: config.get('Synology.host.protocol'),
@@ -54,6 +57,36 @@ exports.resumeTasks = function (req, res) {
         console.log(response);
         res.send(
             response
+        );
+    });
+};
+
+exports.searchMovies = function (req, res) {
+    console.log(req.query);
+    mdb.searchMulti({query: req.query.term, language: "fr"}, function(error, response){
+        var data = {
+            movies: [],
+            tvshows: []
+        }
+        for (var i in response.results) {
+
+            if (response.results[i].media_type == "tv") {
+                data.tvshows.push({
+                    name: response.results[i].original_name,
+                    image: response.results[i].poster_path,
+                    date: response.results[i].first_air_date
+                })
+            }
+            else if(response.results[i].media_type == "movie") {
+                data.movies.push({
+                    name: response.results[i].original_title,
+                    image: response.results[i].poster_path,
+                    release_date: response.results[i].first_air_date
+                })
+            }
+        }
+        res.send(
+            data
         );
     });
 };
