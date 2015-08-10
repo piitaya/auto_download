@@ -68,25 +68,26 @@ exports.searchMovies = function (req, res) {
             movies: [],
             tvshows: []
         }
-        for (var i in response.results) {
-
-            if (response.results[i].media_type == "tv") {
-                data.tvshows.push({
-                    name: response.results[i].original_name,
-                    image: response.results[i].poster_path,
-                    date: response.results[i].first_air_date
-                })
-            }
-            else if(response.results[i].media_type == "movie") {
-                data.movies.push({
-                    name: response.results[i].original_title,
-                    image: response.results[i].poster_path,
-                    release_date: response.results[i].first_air_date
-                })
+        if (response) {
+            for (var i in response.results) {
+                if (response.results[i].media_type == "tv") {
+                    data.tvshows.push({
+                        name: response.results[i].original_name,
+                        image: response.results[i].poster_path,
+                        date: response.results[i].first_air_date
+                    })
+                }
+                else if(response.results[i].media_type == "movie") {
+                    data.movies.push({
+                        name: response.results[i].original_title,
+                        image: response.results[i].poster_path,
+                        release_date: response.results[i].first_air_date
+                    })
+                }
             }
         }
         res.send(
             data
-        );
+        ); 
     });
 };

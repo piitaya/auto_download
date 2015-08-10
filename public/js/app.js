@@ -20,6 +20,10 @@ config(function ($routeProvider, $locationProvider) {
       templateUrl: 'partials/downloads',
       controller: 'DownloadsCtrl'
     }).
+    when('/search', {
+      templateUrl: 'partials/search',
+      controller: 'SearchCtrl'
+    }).
     otherwise({
       redirectTo: '/view1'
     });

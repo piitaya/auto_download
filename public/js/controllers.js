@@ -29,6 +29,31 @@ angular.module('myApp.controllers', []).
     // write Ctrl here
 
   }).
+  controller('SearchCtrl', ['$scope', '$http', function ($scope, $http) {
+
+    // Text changed event
+    $scope.searchTextChange = function(text) {
+      console.log('Text changed to ' + text);
+    };
+
+    // Select item event
+    $scope.selectedItemChange = function(item) {
+      console.log('Item changed to ' + JSON.stringify(item));
+    }
+
+    // Query search
+    $scope.querySearch = function(term) {
+      return $http({
+        method: 'GET',
+        url: '/api/movies/search',
+        params: {term: term}
+      }).
+      then(function (response) {
+        return response.data.tvshows;
+      });
+    }
+
+  }]).
   controller('DownloadsCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
     $scope.listTaks = function() {
@@ -36,10 +61,9 @@ angular.module('myApp.controllers', []).
         method: 'GET',
         url: '/api/tasks'
       }).
-      success(function (data, status, headers, config) {
-        $scope.data = data;
+      then(function (response) {
+        $scope.data = response.data;
       });
-      console.log("coucou");
     }
 
     $scope.resumeTask = function(id) {
@@ -153,4 +177,7 @@ angular.module('myApp.controllers', []).
     $interval(function() {
       $scope.listTaks();
     }, 1000);
+    
   }]);
+
+
