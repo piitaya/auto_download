@@ -1,9 +1,9 @@
 {
-  // Synology module configs
+  // Synology module config
   "Synology": {
-    "url": {
+    "host": {
       "protocol": "http",
-      "host": "192.168.0.x",
+      "url": "192.168.0.x",
       "port": "5000"
     },
     "account": {
@@ -11,6 +11,7 @@
       "password": "password"
     }
   },
+	// The Movie Database config
   "MovieDB": {
     "api": {
       "key": "api_key"
