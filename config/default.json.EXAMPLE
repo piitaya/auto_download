@@ -1,5 +1,5 @@
 {
-  // Synology module configs
+  // Synology module config
   "Synology": {
     "url": {
       "protocol": "http",
@@ -11,6 +11,7 @@
       "password": "password"
     }
   },
+	// The Movie Database config
   "MovieDB": {
     "api": {
       "key": "api_key"
