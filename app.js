@@ -62,6 +62,7 @@ app.get('/api/tasks/', api.listTasks);
 app.post('/api/tasks/resume', api.resumeTasks);
 app.post('/api/tasks/pause', api.pauseTasks);
 app.get('/api/movies/search', api.searchMovies);
+app.get('/api/movie/infos', api.getMovieInfos);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);

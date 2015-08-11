@@ -31,6 +31,7 @@ angular.module('myApp.controllers', []).
   }).
   controller('SearchCtrl', ['$scope', '$http', function ($scope, $http) {
 
+    $scope.selectedMovieInfo = null;
     // Text changed event
     $scope.searchTextChange = function(text) {
       console.log('Text changed to ' + text);
@@ -39,7 +40,15 @@ angular.module('myApp.controllers', []).
     // Select item event
     $scope.selectedItemChange = function(item) {
       console.log('Item changed to ' + JSON.stringify(item));
-    }
+      $http({
+        method: 'GET',
+        url: '/api/movie/infos',
+        params: {id: item.id}
+      }).
+      then(function (response) {
+        $scope.selectedMovieInfo = response;
+      });
+    };
 
     // Query search
     $scope.querySearch = function(term) {
@@ -51,7 +60,7 @@ angular.module('myApp.controllers', []).
       then(function (response) {
         return response.data.tvshows;
       });
-    }
+    };
 
   }]).
   controller('DownloadsCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {

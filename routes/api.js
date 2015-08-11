@@ -50,7 +50,7 @@ exports.pauseTasks = function (req, res) {
 };
 
 exports.resumeTasks = function (req, res) {
-    console.log(req.body)
+    console.log(req.body);
     syno.dl.resumeTasks({id: req.body.id}, function(error, response) {
         res.contentType('json');
         console.log(error);
@@ -64,30 +64,42 @@ exports.resumeTasks = function (req, res) {
 exports.searchMovies = function (req, res) {
     console.log(req.query);
     mdb.searchMulti({query: req.query.term, language: "fr"}, function(error, response){
+        console.log(response);
         var data = {
             movies: [],
             tvshows: []
-        }
+        };
         if (response) {
             for (var i in response.results) {
                 if (response.results[i].media_type == "tv") {
                     data.tvshows.push({
+                        id: response.results[i].id,
                         name: response.results[i].original_name,
                         image: response.results[i].poster_path,
                         date: response.results[i].first_air_date
-                    })
+                    });
                 }
                 else if(response.results[i].media_type == "movie") {
                     data.movies.push({
+                        id: response.results[i].id,
                         name: response.results[i].original_title,
                         image: response.results[i].poster_path,
                         release_date: response.results[i].first_air_date
-                    })
+                    });
                 }
             }
         }
         res.send(
             data
-        ); 
+        );
+    });
+};
+
+exports.getMovieInfos = function (req, res) {
+    mdb.movieInfo({id: req.query.id}, function(error, response){
+        console.log(response);
+        res.send(
+            response
+        );
     });
 };
