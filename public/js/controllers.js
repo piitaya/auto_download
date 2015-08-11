@@ -65,6 +65,8 @@ angular.module('myApp.controllers', []).
   }]).
   controller('DownloadsCtrl', ['$scope', '$http', '$interval', function ($scope, $http, $interval) {
 
+    $scope.isOpen = false;
+    
     $scope.listTaks = function() {
       $http({
         method: 'GET',

@@ -53,51 +53,43 @@ exports.resumeTasks = function (req, res) {
     console.log(req.body);
     syno.dl.resumeTasks({id: req.body.id}, function(error, response) {
         res.contentType('json');
-        console.log(error);
-        console.log(response);
         res.send(
             response
         );
     });
 };
 
-exports.searchMovies = function (req, res) {
-    console.log(req.query);
-    mdb.searchMulti({query: req.query.term, language: "fr"}, function(error, response){
-        console.log(response);
-        var data = {
-            movies: [],
-            tvshows: []
-        };
-        if (response) {
-            for (var i in response.results) {
-                if (response.results[i].media_type == "tv") {
-                    data.tvshows.push({
-                        id: response.results[i].id,
-                        name: response.results[i].original_name,
-                        image: response.results[i].poster_path,
-                        date: response.results[i].first_air_date
-                    });
-                }
-                else if(response.results[i].media_type == "movie") {
-                    data.movies.push({
-                        id: response.results[i].id,
-                        name: response.results[i].original_title,
-                        image: response.results[i].poster_path,
-                        release_date: response.results[i].first_air_date
-                    });
-                }
-            }
-        }
+exports.searchMovie = function (req, res) {
+    mdb.searchMovie({query: req.query.term, language: "fr"}, function(error, response){
+        res.contentType('json');
         res.send(
-            data
+            response
         );
     });
 };
 
-exports.getMovieInfos = function (req, res) {
-    mdb.movieInfo({id: req.query.id}, function(error, response){
-        console.log(response);
+exports.searchTv = function (req, res) {
+    console.log(req.query);
+    mdb.searchMovie({query: req.query.term, language: "fr"}, function(error, response){
+        res.contentType('json');
+        res.send(
+            response
+        );
+    });
+};
+
+exports.getMovieInfo = function (req, res) {
+    mdb.movieInfo({id: req.query.id, language: "fr"}, function(error, response){
+        res.contentType('json');
+        res.send(
+            response
+        );
+    });
+};
+
+exports.getTvInfo = function (req, res) {
+    mdb.tvInfo({id: req.query.id, language: "fr"}, function(error, response){
+        res.contentType('json');
         res.send(
             response
         );

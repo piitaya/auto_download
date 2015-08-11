@@ -22,3 +22,15 @@ block body
 					div
 						| Angular seed app: v
 						span(app-version)
+		div(style="position: absolute; right: 20px; bottom: 20px;" layout='row', flex='')
+			md-fab-speed-dial.md-scale(md-open="isOpen", md-direction='up')
+				md-fab-trigger
+					md-button.md-fab.md-warn(aria-label='menu')
+						md-icon(md-font-icon="mdi mdi-plus" style="color: white; font-size: 28px;")
+				md-fab-actions
+					md-button.md-fab.md-raised.md-mini(aria-label='twitter')
+						md-icon(md-font-icon="mdi mdi-plus" style="color: grey; font-size: 24px;")
+					md-button.md-fab.md-raised.md-mini(aria-label='facebook')
+						md-icon(md-font-icon="mdi mdi-plus" style="color: grey; font-size: 24px;")
+					md-button.md-fab.md-raised.md-mini(aria-label='Google Hangout')
+						md-icon(md-font-icon="mdi mdi-plus" style="color: grey; font-size: 24px;")

@@ -28,9 +28,10 @@ app.set('view engine', 'jade');
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
-app.use(cookieParser())
+app.use(cookieParser());
 app.use(methodOverride());
 app.use(express.static(path.join(__dirname, 'public')));
+app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -58,11 +59,18 @@ app.get('/api/name', api.name);
 
 app.get('/api/login', api.login);
 
+// Task API
 app.get('/api/tasks/', api.listTasks);
 app.post('/api/tasks/resume', api.resumeTasks);
 app.post('/api/tasks/pause', api.pauseTasks);
-app.get('/api/movies/search', api.searchMovies);
-app.get('/api/movie/infos', api.getMovieInfos);
+
+// Search API
+app.get('/api/movie/search', api.searchMovie);
+app.get('/api/movie/info', api.getMovieInfo);
+
+// Info API
+app.get('/api/tv/search', api.searchMovie);
+app.get('/api/tv/info', api.getMovieInfo);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
