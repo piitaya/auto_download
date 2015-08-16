@@ -62,18 +62,38 @@ exports.resumeTasks = function (req, res) {
 exports.searchMovie = function (req, res) {
     mdb.searchMovie({query: req.query.term, language: "fr"}, function(error, response){
         res.contentType('json');
+        var movies = [];
+        for (var i in response.results) {
+            var result = response.results[i];
+            var movie = {
+                id: result.id,
+                name: result.original_title,
+                image: result.poster_path
+            };
+            movies.push(movie);
+        }
         res.send(
-            response
+            {results: movies}
         );
     });
 };
 
 exports.searchTv = function (req, res) {
     console.log(req.query);
-    mdb.searchMovie({query: req.query.term, language: "fr"}, function(error, response){
+    mdb.searchTv({query: req.query.term, language: "fr"}, function(error, response){
         res.contentType('json');
+        var tvs = [];
+        for (var i in response.results) {
+            var result = response.results[i];
+            var tv = {
+                id: result.id,
+                name: result.original_name,
+                image: result.poster_path
+            };
+            tvs.push(tv);
+        }
         res.send(
-            response
+            {results: tvs}
         );
     });
 };
@@ -89,6 +109,15 @@ exports.getMovieInfo = function (req, res) {
 
 exports.getTvInfo = function (req, res) {
     mdb.tvInfo({id: req.query.id, language: "fr"}, function(error, response){
+        res.contentType('json');
+        res.send(
+            response
+        );
+    });
+};
+
+exports.getTvSeasonInfo = function (req, res) {
+    mdb.tvSeasonInfo({id: req.query.id, season_number: req.query.season_number, language: "fr"}, function(error, response){
         res.contentType('json');
         res.send(
             response

@@ -9,6 +9,10 @@
   font-weight: normal;
 }
 
-md-progress-linear.md-success .md-bar {
+.md-success .md-bar {
     background-color: green;
+}
+
+md-radio-button.vertical {
+	display: inline-block;
 }

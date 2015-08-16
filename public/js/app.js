@@ -1,7 +1,5 @@
 'use strict';
 
-// Declare app level module which depends on filters, and services
-
 angular.module('myApp', [
   'ngRoute',
   'ngMaterial',
@@ -9,8 +7,8 @@ angular.module('myApp', [
   'myApp.filters',
   'myApp.services',
   'myApp.directives'
-]).
-config(function ($routeProvider, $locationProvider) {
+])
+.config(function ($routeProvider, $locationProvider) {
   $routeProvider.
     when('/view1', {
       templateUrl: 'partials/partial1',

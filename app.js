@@ -66,11 +66,12 @@ app.post('/api/tasks/pause', api.pauseTasks);
 
 // Search API
 app.get('/api/movie/search', api.searchMovie);
-app.get('/api/movie/info', api.getMovieInfo);
+app.get('/api/tv/search', api.searchTv);
 
 // Info API
-app.get('/api/tv/search', api.searchMovie);
-app.get('/api/tv/info', api.getMovieInfo);
+app.get('/api/movie/info', api.getMovieInfo);
+app.get('/api/tv/info', api.getTvInfo);
+app.get('/api/tv/season', api.getTvSeasonInfo);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
