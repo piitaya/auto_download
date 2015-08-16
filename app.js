@@ -71,7 +71,10 @@ app.get('/api/tv/search', api.searchTv);
 // Info API
 app.get('/api/movie/info', api.getMovieInfo);
 app.get('/api/tv/info', api.getTvInfo);
-app.get('/api/tv/season', api.getTvSeasonInfo);
+app.get('/api/tv/season/info', api.getTvSeasonInfo);
+
+app.get('/api/tv/seasons', api.getSeasons);
+app.get('/api/tv/episodes', api.getEpisodes);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);

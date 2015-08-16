@@ -60,7 +60,7 @@ exports.resumeTasks = function (req, res) {
 };
 
 exports.searchMovie = function (req, res) {
-    mdb.searchMovie({query: req.query.term, language: "fr"}, function(error, response){
+    mdb.searchMovie({query: req.query.term, language: "en"}, function(error, response){
         res.contentType('json');
         var movies = [];
         for (var i in response.results) {
@@ -80,7 +80,7 @@ exports.searchMovie = function (req, res) {
 
 exports.searchTv = function (req, res) {
     console.log(req.query);
-    mdb.searchTv({query: req.query.term, language: "fr"}, function(error, response){
+    mdb.searchTv({query: req.query.term, language: "en"}, function(error, response){
         res.contentType('json');
         var tvs = [];
         for (var i in response.results) {
@@ -99,7 +99,7 @@ exports.searchTv = function (req, res) {
 };
 
 exports.getMovieInfo = function (req, res) {
-    mdb.movieInfo({id: req.query.id, language: "fr"}, function(error, response){
+    mdb.movieInfo({id: req.query.id, language: "en"}, function(error, response){
         res.contentType('json');
         res.send(
             response
@@ -108,7 +108,7 @@ exports.getMovieInfo = function (req, res) {
 };
 
 exports.getTvInfo = function (req, res) {
-    mdb.tvInfo({id: req.query.id, language: "fr"}, function(error, response){
+    mdb.tvInfo({id: req.query.id, language: "en"}, function(error, response){
         res.contentType('json');
         res.send(
             response
@@ -117,10 +117,48 @@ exports.getTvInfo = function (req, res) {
 };
 
 exports.getTvSeasonInfo = function (req, res) {
-    mdb.tvSeasonInfo({id: req.query.id, season_number: req.query.season_number, language: "fr"}, function(error, response){
+    mdb.tvSeasonInfo({id: req.query.id, season_number: req.query.season_number, language: "en"}, function(error, response){
         res.contentType('json');
         res.send(
             response
+        );
+    });
+};
+
+exports.getSeasons = function (req, res) {
+    mdb.tvInfo({id: req.query.id, language: "en"}, function(error, response) {
+        res.contentType('json');
+        var seasons = [];
+        for (var i in response.seasons) {
+            var result = response.seasons[i];
+            var season = {
+                season_number: result.season_number,
+                episode_count: result.episode_count,
+                air_date: result.air_date
+            };
+            seasons.push(season);
+        }
+        res.send(
+            {seasons: seasons}
+        );
+    });
+};
+
+exports.getEpisodes = function (req, res) {
+    mdb.tvSeasonInfo({id: req.query.id, season_number: req.query.season_number, language: "en"}, function(error, response) {
+    res.contentType('json');
+        var episodes = [];
+        for (var i in response.episodes) {
+            var result = response.episodes[i];
+            var episode = {
+                episode_number: result.episode_number,
+                air_date: result.air_date,
+                name: result.name
+            };
+            episodes.push(episode);
+        }
+        res.send(
+            {episodes: episodes}
         );
     });
 };
