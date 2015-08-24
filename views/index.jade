@@ -7,11 +7,10 @@ block body
 			.md-toolbar-tools
 				md-button.md-icon-button(ng-click="toggleSidenav('left')", hide-gt-sm='')
 					md-icon(aria-label='Menu', md-svg-icon='https://s3-us-west-2.amazonaws.com/s.cdpn.io/68133/menu.svg')
-				h1 Hello World
+				h1 Auto Download
 		div(layout='row', flex='')
 			md-sidenav.md-sidenav-left.md-whiteframe-z2(layout='column', md-component-id='left', md-is-locked-open="$mdMedia('gt-sm')")
 				h1 Navigation
-				md-button(ng-href="view1" ng-click="closeSidenav('left')") Link 1
 				md-button(ng-href="downloads" ng-click="closeSidenav('left')") Downloads
 				md-button(ng-href="login" ng-click="closeSidenav('left')") Login
 				md-button(ng-href="search" ng-click="closeSidenav('left')") Search
@@ -28,9 +27,12 @@ block body
 					md-button.md-fab.md-warn(aria-label='menu')
 						md-icon(md-font-icon="mdi mdi-plus" style="color: white; font-size: 28px;")
 				md-fab-actions
-					md-button.md-fab.md-raised.md-mini(aria-label='twitter')
-						md-icon(md-font-icon="mdi mdi-plus" style="color: grey; font-size: 24px;")
-					md-button.md-fab.md-raised.md-mini(aria-label='facebook')
-						md-icon(md-font-icon="mdi mdi-plus" style="color: grey; font-size: 24px;")
-					md-button.md-fab.md-raised.md-mini(aria-label='Google Hangout')
-						md-icon(md-font-icon="mdi mdi-plus" style="color: grey; font-size: 24px;")
+					md-button.md-fab.md-raised.md-mini(aria-label='Série')
+						md-tooltip(md-direction="left") Série
+						md-icon(md-font-icon="mdi mdi-television" style="color: grey; font-size: 24px;")
+					md-button.md-fab.md-raised.md-mini(aria-label='Film')
+						md-tooltip(md-direction="left") Film
+						md-icon(md-font-icon="mdi mdi-filmstrip" style="color: grey; font-size: 24px;")
+					md-button.md-fab.md-raised.md-mini(aria-label='Autre')
+						md-tooltip(md-direction="left") Autre
+						md-icon(md-font-icon="mdi mdi-download" style="color: grey; font-size: 24px;")

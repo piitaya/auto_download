@@ -5,17 +5,24 @@ html(ng-app="myApp")
 		base(href='/')
 		title Angular Express Seed App
 		link(rel="stylesheet", href="/css/app.css")
+		link(rel="stylesheet", href="/bower_components/bootstrap/dist/css/bootstrap.min.css")
 		link(rel="stylesheet", href="/bower_components/angular-material/angular-material.css")
 		link(rel='stylesheet', href='https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic')
 		link(rel="stylesheet", href="/bower_components/mdi/css/materialdesignicons.min.css")
 	body
 		block body
 
+		//- Jquery Dependencies
+		script(src="/bower_components/jquery/dist/jquery.min.js")
+		//- Bootstrap Dependencies
+		script(src="/bower_components/bootstrap/dist/js/bootstrap.min.js")
+		//- Angular Dependencies
 		script(src='/bower_components/angular/angular.min.js')
 		script(src='/bower_components/angular-route/angular-route.min.js')
 		script(src='/bower_components/angular-aria/angular-aria.min.js')
 		script(src='/bower_components/angular-animate/angular-animate.min.js')
 		script(src='/bower_components/angular-material/angular-material.min.js')
+		//- App
 		script(src='js/app.js')
 		//- Controllers
 		script(src='js/controllers/appCtrl.js')

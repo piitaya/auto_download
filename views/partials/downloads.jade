@@ -9,16 +9,16 @@ md-list
 	md-list-item(ng-repeat="task in data.tasks track by $index" ng-cloak layout="row")
 		div(flex="40") {{task.title}}
 
-		div(flex="10" style="text-align: center;") 
+		div(flex="10" style="text-align: center;")
 			{{getStatus(task)}}
 
 		div(flex="20" style="text-align: center;")
 			md-progress-linear(ng-class="getProgressColor(task)" md-mode="{{getProgressMode(task)}}" ng-value="100*task.additional.transfer.size_downloaded/task.size")
 
-		div(flex="10" style="text-align: center;") 
+		div(flex="10" style="text-align: center;")
 			span(ng-if="task.additional.transfer.speed_download > 0") {{task.additional.transfer.speed_download | bytes}}/s
 
-		div(flex="15" style="text-align: center;") 
+		div(flex="15" style="text-align: center;")
 			{{task.additional.transfer.size_downloaded | bytes}}/{{task.size | bytes}}
 
 		div(flex="5" style="text-align: center;")

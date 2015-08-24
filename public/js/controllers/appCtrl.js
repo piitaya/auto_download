@@ -11,15 +11,4 @@ angular.module('myApp.controllers').controller('AppCtrl', ['$scope', '$http', '$
 	$scope.closeSidenav = function(menuId) {
 		$mdSidenav(menuId).close();
 	};
-
-	$http({
-		method: 'GET',
-		url: '/api/name'
-	}).
-	success(function (data, status, headers, config) {
-		$scope.name = data.name;
-	}).
-	error(function (data, status, headers, config) {
-		$scope.name = 'Error!';
-	});
 }]);

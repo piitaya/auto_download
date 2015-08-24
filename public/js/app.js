@@ -10,10 +10,6 @@ angular.module('myApp', [
 ])
 .config(function ($routeProvider, $locationProvider) {
   $routeProvider.
-    when('/view1', {
-      templateUrl: 'partials/partial1',
-      controller: 'MyCtrl1'
-    }).
     when('/downloads', {
       templateUrl: 'partials/downloads',
       controller: 'DownloadsCtrl'
@@ -23,7 +19,7 @@ angular.module('myApp', [
       controller: 'SearchCtrl'
     }).
     otherwise({
-      redirectTo: '/view1'
+      redirectTo: '/downloads'
     });
 
   $locationProvider.html5Mode(true);
