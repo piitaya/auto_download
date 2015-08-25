@@ -12,8 +12,8 @@ var express = require('express'),
   http = require('http'),
   path = require('path'),
   cookieParser = require('cookie-parser'),
-  sassMiddleware = require('node-sass-middleware');
-  
+  sassMiddleware = require('node-sass-middleware'),
+  db = require('./model/db');
 var app = module.exports = express();
 
 
