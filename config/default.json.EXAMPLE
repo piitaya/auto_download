@@ -16,5 +16,12 @@
     "api": {
       "key": "api_key"
     }
+  },
+  // MongoDB config
+  "MongoDB": {
+    "user": "user",
+    "password": "password",
+    "url": "192.168.0.x",
+    "port": "27017"
   }
 }

@@ -45,6 +45,7 @@ app.use(
   })
 );
 
+
 app.use(express.static(path.join(__dirname, 'public')));
 
 /**
@@ -93,6 +94,12 @@ app.get('/api/tv/episodes', API.movieDB.getEpisodes);
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
 
+var schedule = require('node-schedule');
+
+var rule = new schedule.RecurrenceRule();
+var j = schedule.scheduleJob('* * * * *', function(){
+    console.log(new Date());
+});
 
 /**
  * Start Server
