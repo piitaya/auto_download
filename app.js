@@ -30,12 +30,26 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
 app.use(cookieParser());
 app.use(methodOverride());
-app.use(express.static(path.join(__dirname, 'public')));
 app.use('/bower_components', express.static(path.join(__dirname, 'bower_components')));
 
 var API = {};
 API.movieDB = require('./routes/api/moviedb');
 API.tasks = require('./routes/api/tasks');
+
+app.use(
+  sassMiddleware({
+    src: __dirname + '/sass',
+    dest: __dirname + '/public',
+    debug: true,
+    outputStyle: 'compressed'
+  })
+);
+
+app.use(express.static(path.join(__dirname, 'public')));
+
+/**
+ * Environnements
+ */
 
 var env = process.env.NODE_ENV || 'development';
 
@@ -49,13 +63,6 @@ if (env === 'production') {
   // TODO
 }
 
-app.use('/styles', sassMiddleware({
-    /* Options */
-    src: __dirname + '/public/style/sass',
-    dest: __dirname + '/public/style/css',
-    debug: true,
-    outputStyle: 'compressed'
-}));
 /**
  * Routes
  */
@@ -93,6 +100,4 @@ app.get('*', routes.index);
 
 http.createServer(app).listen(app.get('port'), function() {
   console.log('Express server listening on port ' + app.get('port'));
-  console.log('srcPath is ' + __dirname + '/public/style/sass');
-  console.log('destPath is ' + __dirname + '/public/style/css');
 });

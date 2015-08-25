@@ -1,18 +1,1 @@
-.md-sidenav-left > .md-button {
-  width: 100%;
-  margin: 0;
-  padding: 10px;
-}
-
-.md-sidenav-left > h1 {
-  text-align: center;
-  font-weight: normal;
-}
-
-.md-success .md-bar {
-    background-color: green;
-}
-
-md-radio-button.vertical {
-	display: inline-block;
-}
+.md-sidenav-left>.md-button{width:100%;margin:0;padding:10px}.md-sidenav-left>h1{text-align:center;font-weight:normal}.md-success .md-bar{background-color:green}md-radio-button.vertical{display:inline-block}
