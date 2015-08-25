@@ -35,6 +35,7 @@ app.use('/bower_components', express.static(path.join(__dirname, 'bower_componen
 var API = {};
 API.movieDB = require('./routes/api/moviedb');
 API.tasks = require('./routes/api/tasks');
+API.files = require('./routes/api/files');
 
 app.use(
   sassMiddleware({
@@ -90,6 +91,13 @@ app.get('/api/tv/season/info', API.movieDB.getTvSeasonInfo);
 
 app.get('/api/tv/seasons', API.movieDB.getSeasons);
 app.get('/api/tv/episodes', API.movieDB.getEpisodes);
+
+// File API
+app.get('api/files', API.files.getAll)
+app.post('api/files', API.files.create)
+app.get(('api/files/:file_id', API.files.get)
+app.put(('api/files/:file_id', API.files.update)
+app.delete('api/files/:file_id', API.files.delete)
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
