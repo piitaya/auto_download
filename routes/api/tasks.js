@@ -1,5 +1,6 @@
 var config = require('config');
 var Syno = require('syno');
+var File = require(__base + '/model/files');
 
 var syno = new Syno({
     // Requests protocol : 'http' or 'https' (default: http)
@@ -15,7 +16,7 @@ var syno = new Syno({
 });
 
 
-exports.listTasks = function (req, res) {
+exports.getAll = function (req, res) {
 	syno.dl.listTasks({additional: "detail,transfer"}, function(error, response) {
         res.contentType('json');
 		res.send(
@@ -24,7 +25,7 @@ exports.listTasks = function (req, res) {
 	});
 };
 
-exports.pauseTasks = function (req, res) {
+exports.pause = function (req, res) {
     syno.dl.pauseTasks({id: req.body.id}, function(error, response) {
         res.contentType('json');
         res.send(
@@ -33,7 +34,7 @@ exports.pauseTasks = function (req, res) {
     });
 };
 
-exports.resumeTasks = function (req, res) {
+exports.resume = function (req, res) {
     console.log(req.body);
     syno.dl.resumeTasks({id: req.body.id}, function(error, response) {
         res.contentType('json');
@@ -42,3 +43,58 @@ exports.resumeTasks = function (req, res) {
         );
     });
 };
+
+exports.create = function(req, res) {
+    console.log(req.body);
+    syno.dl.createTask({'uri': req.body.url}, function(createError, createResponse) {
+        if (!createError) {
+            syno.dl.listTasks({additional: "detail"}, function(listError, listResponse) {
+                if (!listError) {
+                    if (!req.body.name) {
+                        res.send({
+                            success: true,
+                            file: "Task launched but no auto rename"
+                        });
+                    }
+                    else {
+                        var taskId = null;
+                        for(var i in listResponse.tasks) {
+                            if (listResponse.tasks[i].additional.detail.uri == req.body.url) {
+                                taskId = listResponse.tasks[i].id;
+                                break;
+                            }
+                        }
+                        var newFile = File({
+                            name: req.body.name,
+                            taskId: taskId
+                        });
+                        newFile.save().then(function(file) {
+                            res.send({
+                                success: true,
+                                file: file
+                            });
+                        },
+                        function(fileError) {
+                            res.send({
+                                success: false,
+                                error: fileError
+                            });
+                        });
+                    }
+                }
+                else {
+                    res.send({
+                        success: false,
+                        error: listError
+                    });
+                }
+            });
+        }
+        else {
+            res.send({
+                success: false,
+                error: createError
+            });
+        }
+    });
+}

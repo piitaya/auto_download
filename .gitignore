@@ -2,3 +2,4 @@ node_modules
 bower_components
 keys
 config/*.json
+public/css/app.css

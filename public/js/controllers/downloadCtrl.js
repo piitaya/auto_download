@@ -38,69 +38,42 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 		});
 	};
 
-	$scope.getStatus = function(task) {
-		switch(task.status) {
-			case "downloading":
-				return "Téléchargement";
-			case "finished":
-				return "Terminé";
-			case "paused":
-				return "En pause";
-			default:
-				return "En attente";
+	$scope.statusConfig = {
+		downloading: {
+			label: "Téléchargement",
+			progressColor: "",
+			progressMode: "determinate",
+			actionIcon: "mdi mdi-pause-circle",
+			actionColor: "red",
+			actionFunction: $scope.pauseTask
+		},
+		finished: {
+			label: "Terminé",
+			progressColor: "md-success",
+			progressMode: "determinate",
+			actionIcon: "mdi mdi-checkbox-marked-circle",
+			actionColor: "green",
+			actionFunction: undefined
+		},
+		paused: {
+			label: "En pause",
+			progressColor: "md-warn",
+			progressMode: "determinate",
+			actionIcon: "mdi mdi-play-circle",
+			actionColor: "blue",
+			actionFunction: $scope.resumeTask
+		},
+		default: {
+			label: "En attente",
+			progressColor: "",
+			progressMode: "indeterminate",
+			actionIcon: "mdi mdi-dots-horizontal",
+			actionColor: "blue",
+			actionFunction: undefined
 		}
-	};
-
-	$scope.getProgressMode = function(task) {
-		switch(task.status) {
-			case "downloading":
-				return "determinate";
-			case "finished":
-				return "determinate";
-			case "paused":
-				return "determinate";
-			default:
-				return "indeterminate";
-		}
-	};
-
-	$scope.getProgressColor = function(task) {
-		switch(task.status) {
-			case "downloading":
-				return "";
-			case "finished":
-				return "md-success";
-			case "paused":
-				return "md-warn";
-			default:
-				return "";
-		}
-	};
-
-	$scope.getActionIcon = function(task) {
-		switch(task.status) {
-			case "downloading":
-				return "mdi mdi-pause-circle";
-			case "finished":
-				return "mdi mdi-checkbox-marked-circle";
-			case "paused":
-				return "mdi mdi-play-circle";
-			default:
-				return "mdi mdi-dots-horizontal";
-		}
-	};
-
-	$scope.getActionColor = function(task) {
-		switch(task.status) {
-			case "downloading":
-				return "red";
-			case "finished":
-				return "green";
-			case "paused":
-				return "blue";
-			default:
-				return "blue";
-		}
+	}
+	$scope.getElement = function(task, element) {
+		return $scope.statusConfig[task.status] ? $scope.statusConfig[task.status][element] : $scope.statusConfig.default[element]
 	};
 
 	$scope.$on('$viewContentLoaded', function(){

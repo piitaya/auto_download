@@ -16,6 +16,7 @@ var express = require('express'),
   db = require('./model/db');
 var app = module.exports = express();
 
+global.__base = __dirname + '/';
 
 /**
  * Configuration
@@ -40,9 +41,10 @@ API.files = require('./routes/api/files');
 app.use(
   sassMiddleware({
     src: __dirname + '/sass',
-    dest: __dirname + '/public',
+    dest: __dirname + '/public/css',
     debug: true,
-    outputStyle: 'compressed'
+    outputStyle: 'compressed',
+    prefix: "/css"
   })
 );
 
@@ -74,10 +76,10 @@ app.get('/', routes.index);
 app.get('/partials/:name', routes.partials);
 
 // Task API
-app.get('/api/tasks/', API.tasks.listTasks);
-app.post('/api/tasks/resume', API.tasks.resumeTasks);
-app.post('/api/tasks/pause', API.tasks.pauseTasks);
-
+app.get('/api/tasks/', API.tasks.getAll);
+app.post('/api/tasks/resume', API.tasks.resume);
+app.post('/api/tasks/pause', API.tasks.pause);
+app.post('/api/tasks', API.tasks.create);
 
 //// Movie DB
 // Search API
@@ -93,20 +95,21 @@ app.get('/api/tv/seasons', API.movieDB.getSeasons);
 app.get('/api/tv/episodes', API.movieDB.getEpisodes);
 
 // File API
-app.get('api/files', API.files.getAll)
-app.post('api/files', API.files.create)
-app.get(('api/files/:file_id', API.files.get)
-app.put(('api/files/:file_id', API.files.update)
-app.delete('api/files/:file_id', API.files.delete)
+app.get('/api/files', API.files.getAll);
+app.post('/api/files', API.files.create);
+app.get('/api/files/:file_id', API.files.get);
+//app.put('/api/files/:file_id', API.files.update);
+app.delete('/api/files/:file_id', API.files.delete);
 
 // redirect all others to the index (HTML5 history)
 app.get('*', routes.index);
 
 var schedule = require('node-schedule');
 
+var cron = require('./routes/cron');
 var rule = new schedule.RecurrenceRule();
 var j = schedule.scheduleJob('* * * * *', function(){
-    console.log(new Date());
+    cron.process();
 });
 
 /**
