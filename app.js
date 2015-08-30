@@ -37,6 +37,7 @@ var API = {};
 API.movieDB = require('./routes/api/moviedb');
 API.tasks = require('./routes/api/tasks');
 API.files = require('./routes/api/files');
+var cron = require('./routes/cron');
 
 app.use(
   sassMiddleware({
@@ -71,6 +72,7 @@ if (env === 'production') {
  * Routes
  */
 
+app.post('/cron/folder', cron.createFolder);
 // serve index and view partials
 app.get('/', routes.index);
 app.get('/partials/:name', routes.partials);
@@ -106,7 +108,6 @@ app.get('*', routes.index);
 
 var schedule = require('node-schedule');
 
-var cron = require('./routes/cron');
 var rule = new schedule.RecurrenceRule();
 var j = schedule.scheduleJob('* * * * *', function(){
     cron.process();

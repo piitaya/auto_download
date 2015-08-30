@@ -97,11 +97,41 @@ function getExtension(fileName) {
     return fileName.split(".")[fileName.split(".").length - 1];
 }
 
+function createFolder(folder_path, name) {
+    return new Promise(function(resolve, reject) {
+        syno.fs.createFolder({
+            folder_path: folder_path,
+            name: name
+        }, function(err, response) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                resolve(response);
+            }
+        });
+    });
+}
+
+exports.createFolder = function(req, res) {
+    createFolder(req.body.folder_path, req.body.name).then(function(response) {
+        res.send({
+            success: true,
+            response: response
+        });
+    }, function(err) {
+        res.send({
+            success: false,
+            error: err
+        });
+    });
+};
+
 function moveFile(element) {
     return new Promise(function(resolve, reject) {
         syno.fs.startCopyMove({
             path: "/downloads/" + element.destName,
-            dest_folder_path: "/video/test/truc",
+            dest_folder_path: "/video/test",
             remove_src: true
         }, function(err, response) {
             if (err) {
