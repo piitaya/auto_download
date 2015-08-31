@@ -66,6 +66,10 @@ exports.create = function(req, res) {
                         }
                         var newFile = File({
                             name: req.body.name,
+                            type: req.body.type,
+                            tvshow: req.body.tvshow,
+                            season: req.body.season,
+                            episode: req.body.episode,
                             taskId: taskId
                         });
                         newFile.save().then(function(file) {

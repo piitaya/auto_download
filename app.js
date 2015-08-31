@@ -72,7 +72,6 @@ if (env === 'production') {
  * Routes
  */
 
-app.post('/cron/folder', cron.createFolder);
 // serve index and view partials
 app.get('/', routes.index);
 app.get('/partials/:name', routes.partials);

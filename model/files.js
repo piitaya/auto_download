@@ -5,8 +5,9 @@ var fileSchema = new Schema({
   name: String,
   taskId: String,
   type: String,
+  tvshow: String,
   season: String,
-  episode: String,
+  episode: String
 });
 
 var File = mongoose.model('File', fileSchema);

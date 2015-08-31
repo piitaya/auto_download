@@ -26,29 +26,15 @@ exports.process = function() {
                 console.log(elements);
 
                 //Rename Files
-                var renamePromises = [];
+                var promises = [];
                 for (var i in elements) {
-                    renamePromises.push(renameFile(elements[i]));
+                    promises.push(process(elements[i]));
                 }
-                if(renamePromises.length>0){
-                    Promise.all(renamePromises).then(function(){
-                        console.log(renamePromises.length + " files renamed");
-                        //Move files
-                        var movePromises = [];
-                        for (var i in elements) {
-                            movePromises.push(moveFile(elements[i]));
-                        }
-                        if(movePromises.length>0){
-                            Promise.all(movePromises).then(function(){
-                                console.log(movePromises.length + " files moved");
-                            }, function(error) {
-                                console.log(error);
-                            });
-                        } else {
-                            console.log('No file to move');
-                        }
-                    }, function(error) {
-                        console.log(error);
+                if(promises.length>0){
+                    Promise.all(promises).then(function(){
+                        console.log(promises.length + " files processed");
+                    }, function(err) {
+                        console.log(err);
                     });
                 } else {
                     console.log('No file to rename');
@@ -63,38 +49,87 @@ exports.process = function() {
     });
 }
 
+function process(element) {
+    return new Promise(function(resolve, reject) {
+        renameFile(element).then(function() {
+            return createPath(element);
+        },
+        function(err) {
+            console.log('Error while renaming file');
+            reject(err);
+        })
+        .then(function(path) {
+            return moveFile(element, path);
+        },
+        function(err) {
+            reject(err);
+        })
+        .then(function() {
+            resolve(element);
+        },
+        function(err) {
+            console.log('Error while moving file');
+            reject(err);
+        });
+    });
+}
+
 function getValidElements(tasks, files) {
     var response = [];
     for (var i in tasks) {
+        console.log(tasks[i].status)
         for (var j in files) {
             if (tasks[i].id == files[j].taskId && tasks[i].status == "finished") {
                 response.push({
-                    srcName: tasks[i].title,
-                    destName: getFileName(files[j]) + "." + getExtension(tasks[i].title),
+                    name: files[j].name,
+                    type: files[j].type,
+                    tvshow: files[j].tvshow,
+                    season: files[j].season,
+                    episode: files[j].episode,
                     taskId: tasks[i].id,
-                    fileId: files[j]._id
-                })
+                    fileId: files[j]._id,
+                    srcFileName: tasks[i].title,
+                    destFileName: getFileName(files[j]) + "." + getExtension(tasks[i].title)
+                });
             }
         }
     }
     return response;
 }
 
-function getFileName(file) {
-    var filename = "";
-    if (file.type == "tv") {
-        var season = file.season > 9 ? file.season : "0" + file.season;
-        var episode = file.episode > 9 ? file.episode : "0" + file.episode;
-        filename = file.tvshow + " - " + season + "x" + episode + " - " + filename;
-    }
-    else {
-        filename = file.name;
-    }
-    return filename;
+function moveFile(element, path) {
+    return new Promise(function(resolve, reject) {
+        syno.fs.startCopyMove({
+            path: "/downloads/" + element.destFileName,
+            dest_folder_path: path,
+            remove_src: true
+        }, function(err, response) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                console.log("file moved !")
+                resolve(element);
+            }
+        });
+    });
 }
 
-function getExtension(fileName) {
-    return fileName.split(".")[fileName.split(".").length - 1];
+function renameFile(element) {
+    return new Promise(function(resolve, reject) {
+        syno.fs.rename({
+            path: "/downloads/" + element.srcFileName,
+            name: element.destFileName,
+        }, function(err, response) {
+            if (err) {
+                reject(err);
+            }
+            else {
+                console.log("file renamed !")
+                resolve(element);
+            }
+        });
+    });
 }
 
 function createFolder(folder_path, name) {
@@ -113,51 +148,43 @@ function createFolder(folder_path, name) {
     });
 }
 
-exports.createFolder = function(req, res) {
-    createFolder(req.body.folder_path, req.body.name).then(function(response) {
-        res.send({
-            success: true,
-            response: response
-        });
-    }, function(err) {
-        res.send({
-            success: false,
-            error: err
-        });
-    });
-};
-
-function moveFile(element) {
+function createPath(element) {
     return new Promise(function(resolve, reject) {
-        syno.fs.startCopyMove({
-            path: "/downloads/" + element.destName,
-            dest_folder_path: "/video/test",
-            remove_src: true
-        }, function(err, response) {
-            if (err) {
+        if (element.type == "tv") {
+            createFolder("/video/Serie", element.tvshow).then(function() {
+                return createFolder("/video/Serie/" + element.tvshow, "Saison " + element.season);
+            }, function(err) {
+                console.log('Error while create tv show name folder');
                 reject(err);
-            }
-            else {
-                console.log("file moved !")
-                resolve(element);
-            }
-        });
+            }).then(function() {
+                resolve("/video/Serie/" + element.tvshow + "/Saison " + element.season);
+            }, function(err) {
+                console.log('Error while create season name folder');
+                reject(err);
+            });
+        }
+        else if (element.type == "movie") {
+            resolve("/video/Film");
+        }
+        else {
+            reject();
+        }
     });
 }
 
-function renameFile(element) {
-    return new Promise(function(resolve, reject) {
-        syno.fs.rename({
-            path: "/downloads/" + element.srcName,
-            name: element.destName,
-        }, function(err, response) {
-            if (err) {
-                reject(err);
-            }
-            else {
-                console.log("file renamed !")
-                resolve(element);
-            }
-        });
-    });
+//Utils functions
+
+function getFileName(file) {
+    if (file.type == "tv") {
+        var season = file.season > 9 ? file.season : "0" + file.season;
+        var episode = file.episode > 9 ? file.episode : "0" + file.episode;
+        return file.tvshow + " - " + season + "x" + episode + " - " + file.name;
+    }
+    else {
+        return file.name;
+    }
+}
+
+function getExtension(fileName) {
+    return fileName.split(".")[fileName.split(".").length - 1];
 }
