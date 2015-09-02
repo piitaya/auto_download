@@ -15,16 +15,17 @@ var syno = new Syno({
     passwd: config.get('Synology.account.password'),
 });
 
+var folder = config.get('Process.folder');
+
 exports.process = function() {
     syno.dl.listTasks({}, function(listError, listResponse) {
         if (!listError) {
             console.log("List tasks: done!");
             var tasks = listResponse.tasks;
-            File.find().then(function(files) {
+            File.find({completed: false}).then(function(files) {
                 console.log("List files: done!");
                 var elements = getValidElements(tasks, files);
                 console.log(elements);
-
                 //Rename Files
                 var promises = [];
                 for (var i in elements) {
@@ -32,12 +33,12 @@ exports.process = function() {
                 }
                 if(promises.length>0){
                     Promise.all(promises).then(function(){
-                        console.log(promises.length + " files processed");
+                        console.log(promises.length + " files processed!");
                     }, function(err) {
                         console.log(err);
                     });
                 } else {
-                    console.log('No file to rename');
+                    console.log('No file to process');
                 }
             }, function(fileError) {
                 console.log("error while listing file tasks : " + fileError);
@@ -52,55 +53,63 @@ exports.process = function() {
 function process(element) {
     return new Promise(function(resolve, reject) {
         renameFile(element).then(function() {
+            console.log("File renamed !")
             return createPath(element);
         },
         function(err) {
-            console.log('Error while renaming file');
+            console.log('Error while renaming file...');
             reject(err);
         })
         .then(function(path) {
+            console.log("Path created !")
             return moveFile(element, path);
         },
         function(err) {
+            console.log('Error while creating path...');
             reject(err);
         })
         .then(function() {
+            console.log("File moved !")
+            element.file.completed = true;
+            return element.file.save()
+        },
+        function(err) {
+            console.log('Error while moving file...');
+            reject(err);
+        })
+        .then(function() {
+            console.log("File saved !")
             resolve(element);
         },
         function(err) {
-            console.log('Error while moving file');
+            console.log('Error while saving file...');
             reject(err);
         });
     });
 }
 
 function getValidElements(tasks, files) {
-    var response = [];
+    var elements = [];
     for (var i in tasks) {
         console.log(tasks[i].status)
         for (var j in files) {
             if (tasks[i].id == files[j].taskId && tasks[i].status == "finished") {
-                response.push({
-                    name: files[j].name,
-                    type: files[j].type,
-                    tvshow: files[j].tvshow,
-                    season: files[j].season,
-                    episode: files[j].episode,
-                    taskId: tasks[i].id,
-                    fileId: files[j]._id,
+                elements.push({
+                    file: files[j],
+                    task: tasks[i],
                     srcFileName: tasks[i].title,
                     destFileName: getFileName(files[j]) + "." + getExtension(tasks[i].title)
                 });
             }
         }
     }
-    return response;
+    return elements;
 }
 
 function moveFile(element, path) {
     return new Promise(function(resolve, reject) {
         syno.fs.startCopyMove({
-            path: "/downloads/" + element.destFileName,
+            path: folder.downloads + "/" + element.destFileName,
             dest_folder_path: path,
             remove_src: true
         }, function(err, response) {
@@ -108,7 +117,6 @@ function moveFile(element, path) {
                 reject(err);
             }
             else {
-                console.log("file moved !")
                 resolve(element);
             }
         });
@@ -118,14 +126,13 @@ function moveFile(element, path) {
 function renameFile(element) {
     return new Promise(function(resolve, reject) {
         syno.fs.rename({
-            path: "/downloads/" + element.srcFileName,
+            path: folder.downloads + "/" + element.srcFileName,
             name: element.destFileName,
         }, function(err, response) {
             if (err) {
                 reject(err);
             }
             else {
-                console.log("file renamed !")
                 resolve(element);
             }
         });
@@ -139,10 +146,11 @@ function createFolder(folder_path, name) {
             name: name
         }, function(err, response) {
             if (err) {
+                console.log(err);
                 reject(err);
             }
             else {
-                resolve(response);
+                resolve(folder_path + "/" + name);
             }
         });
     });
@@ -150,21 +158,23 @@ function createFolder(folder_path, name) {
 
 function createPath(element) {
     return new Promise(function(resolve, reject) {
-        if (element.type == "tv") {
-            createFolder("/video/Serie", element.tvshow).then(function() {
-                return createFolder("/video/Serie/" + element.tvshow, "Saison " + element.season);
+        if (element.file.getType() == "tv") {
+            console.log(folder.tv + " - " + element.file.tv.name);
+            createFolder(folder.tv, element.file.tv.name).then(function(tvPath) {
+                console.log(tvPath);
+                return createFolder(tvPath, "Saison " + element.file.tv.season);
             }, function(err) {
-                console.log('Error while create tv show name folder');
+                console.log('Error while creating tv show name folder');
                 reject(err);
-            }).then(function() {
-                resolve("/video/Serie/" + element.tvshow + "/Saison " + element.season);
+            }).then(function(fullPath) {
+                resolve(fullPath);
             }, function(err) {
-                console.log('Error while create season name folder');
+                console.log('Error while creating season name folder');
                 reject(err);
             });
         }
-        else if (element.type == "movie") {
-            resolve("/video/Film");
+        else if (element.file.getType() == "movie") {
+            resolve(folder.movie);
         }
         else {
             reject();
@@ -175,13 +185,16 @@ function createPath(element) {
 //Utils functions
 
 function getFileName(file) {
-    if (file.type == "tv") {
-        var season = file.season > 9 ? file.season : "0" + file.season;
-        var episode = file.episode > 9 ? file.episode : "0" + file.episode;
-        return file.tvshow + " - " + season + "x" + episode + " - " + file.name;
+    if (file.getType() == "tv") {
+        var season = file.tv.season > 9 ? file.tv.season : "0" + file.tv.season;
+        var episode = file.tv.episode > 9 ? file.tv.episode : "0" + file.tv.episode;
+        return file.tv.name + " - " + season + "x" + episode + " - " + file.tv.title;
+    }
+    else if (file.getType() == "movie") {
+        return file.movie.name + " (" + file.movie.year + ")";
     }
     else {
-        return file.name;
+        return ""
     }
 }
 

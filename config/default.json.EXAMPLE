@@ -20,5 +20,12 @@
   // MongoDB config
   "MongoDB": {
     "uri": "mongodb://<dbuser>:<dbpassword>@<dbhost>:<dbport>/<dbdatabase>"
+  },
+  "Process": {
+    "folder": {
+      "downloads": "",
+      "tv": "",
+      "movie": ""
+    }
   }
 }

@@ -50,13 +50,7 @@ exports.create = function(req, res) {
         if (!createError) {
             syno.dl.listTasks({additional: "detail"}, function(listError, listResponse) {
                 if (!listError) {
-                    if (!req.body.name) {
-                        res.send({
-                            success: true,
-                            file: "Task launched but no auto rename"
-                        });
-                    }
-                    else {
+                    if (req.body.url) {
                         var taskId = null;
                         for(var i in listResponse.tasks) {
                             if (listResponse.tasks[i].additional.detail.uri == req.body.url) {
@@ -64,14 +58,31 @@ exports.create = function(req, res) {
                                 break;
                             }
                         }
-                        var newFile = File({
-                            name: req.body.name,
-                            type: req.body.type,
-                            tvshow: req.body.tvshow,
-                            season: req.body.season,
-                            episode: req.body.episode,
-                            taskId: taskId
+                        var newFile = new File({
+                            taskId: taskId,
+                            completed: false
                         });
+                        if (req.body.type == "tv") {
+                            newFile.tv = {
+                                name: req.body.name,
+                                season: req.body.season,
+                                episode: req.body.episode,
+                                title: req.body.title
+                            }
+                        }
+                        else if (req.body.type == "movie") {
+                            newFile.movie = {
+                                title: req.body.title,
+                                year: req.body.year
+                            }
+                        }
+                        else {
+                            res.send({
+                                success: true,
+                            });
+                        }
+                        console.log(newFile);
+                        console.log(newFile.getType())
                         newFile.save().then(function(file) {
                             res.send({
                                 success: true,
@@ -83,6 +94,12 @@ exports.create = function(req, res) {
                                 success: false,
                                 error: fileError
                             });
+                        });
+                    }
+                    else {
+                        res.send({
+                            success: false,
+                            file: "Missing url parameter"
                         });
                     }
                 }
