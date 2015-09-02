@@ -191,7 +191,7 @@ function getFileName(file) {
         return file.tv.name + " - " + season + "x" + episode + " - " + file.tv.title;
     }
     else if (file.getType() == "movie") {
-        return file.movie.name + " (" + file.movie.year + ")";
+        return file.movie.title + " (" + file.movie.year + ")";
     }
     else {
         return ""
