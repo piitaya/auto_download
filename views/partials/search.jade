@@ -1,33 +1,75 @@
 .container
 	.row
 		.col-xs-4
-			md-button(layout-fill style="margin: 0")
-				md-icon(md-font-icon="mdi mdi-filmstrip" style="color: grey; font-size: 60pt; height: auto;")
+			md-button.type-button(layout-fill style="margin: 0" ng-click="selectType('movie')" ng-class="mediaType == 'movie' ? 'active' : ''")
+				md-icon(md-font-icon="mdi mdi-filmstrip")
 		.col-xs-4
-			md-button(layout-fill style="margin: 0").active
-				md-icon(md-font-icon="mdi mdi-television" style="color: grey; font-size: 60pt; height: auto;")
+			md-button.type-button(layout-fill style="margin: 0" ng-click="selectType('tv')" ng-class="mediaType == 'tv' ? 'active' : ''")
+				md-icon(md-font-icon="mdi mdi-television")
 		.col-xs-4
-			md-button(layout-fill style="margin: 0")
-				md-icon(md-font-icon="mdi mdi-download" style="color: grey; font-size: 60pt; height: auto;")
+			md-button.type-button(layout-fill style="margin: 0" ng-click="selectType('other')" ng-class="mediaType == 'other' ? 'active' : ''")
+				md-icon(md-font-icon="mdi mdi-download")
+	
+	div(ng-if="mediaType == 'tv' || mediaType == 'movie'")
+		.row
+			.col-xs-12
+				md-autocomplete(
+					md-no-cache="true"
+					md-selected-item="search.selectedItem"
+					md-search-text="search.searchText"
+					md-items="item in querySearch(search.searchText)"
+					md-item-text="item.name"
+					md-selected-item-change="getSeasons()"
+					placeholder="{{autoCompleteLabel}}")
+					md-item-template
+						img(ng-if="item.image" style="height: 40px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{item.image}}")
+						span {{item.name}}
+
 	.row
 		.col-xs-12
-			md-autocomplete(md-selected-item='selectedItem', md-search-text-change="searchTextChange(searchText)", md-selected-item-change="getSeasons()", md-search-text='searchText', md-items='item in querySearch(searchText)', md-item-text='item.name')
-				md-item-template
-					img(ng-if="item.image" style="height: 40px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{item.image}}")
-					span {{item.name}}
-	.row
-		.col-xs-12
-			div(ng-show="selectedItem")
-				h2 {{selectedItem.name}}
-				img(ng-if="selectedItem.image" style="height: 250px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{selectedItem.image}}")
-				div(layout="row")
-					div(flex="20")
-						md-select(ng-model="selectedSeason" ng-change="getEpisodes()" placeholder="Saison" ng-show="selectedItem")
-							md-optgroup(label="Officielles")
-								md-option(ng-repeat="season in seasons" ng-value="season" ng-if="season.season_number > 0") Saison {{season.season_number}} ({{season.air_date | date:'yyyy'}})
-							md-optgroup(label="Autres")
-								md-option(ng-repeat="season in seasons" ng-value="season" ng-if="season.season_number == 0") Saison {{season.season_number}} ({{season.air_date | date:'yyyy'}})
-					div(flex="30")
-						md-select(ng-model="selectedEpisode" placeholder="Episode" ng-show="selectedSeason")
-							md-option(ng-repeat="episode in episodes" ng-value="episode") Episode {{episode.episode_number}} : {{episode.name}} ({{episode.air_date | date:'dd/MM/yyyy'}})
-					div(flex="20") {{formattedName()}}
+			div(ng-show="search.selectedItem && mediaType == 'tv'")
+				h2 {{search.selectedItem.name}}
+				img(ng-if="search.selectedItem.image" style="height: 250px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{search.selectedItem.image}}")
+				.row(ng-show="search.selectedItem")
+					.col-xs-3
+						md-input-container
+							label Saison
+							md-select(ng-model="search.selectedSeason"  ng-change="getEpisodes()")
+								md-optgroup(label="Offcielles")
+									md-option(ng-repeat="season in seasons" ng-value="season" ng-if="season.season_number > 0") Saison {{season.season_number}} ({{season.air_date | date:'yyyy'}})
+								md-optgroup(label="Autres")
+									md-option(ng-repeat="season in seasons" ng-value="season" ng-if="season.season_number == 0") Saison {{season.season_number}} ({{season.air_date | date:'yyyy'}})
+					.col-xs-3
+						md-input-container
+							label Episode
+							md-select(ng-model="search.selectedEpisode" placeholder="Episode" ng-disabled="!search.selectedSeason")
+								md-option(ng-repeat="episode in episodes" ng-value="episode") Episode {{episode.episode_number}} : {{episode.name}} ({{episode.air_date | date:'dd/MM/yyyy'}})
+					.col-xs-4
+						md-input-container
+							label Lien de téléchargement
+							input(type="text" ng-model="search.link")
+					.col-xs-2
+						md-button.md-raised.md-primary(
+							style="margin-top: 20px;" 
+							ng-disabled="!search.selectedEpisode || !search.selectedEpisode || !search.link"
+							ng-click="startDownload('tv')") Télécharger
+			div(ng-show="search.selectedItem && mediaType == 'movie'" ng-cloak)
+				.col-xs-10
+						md-input-container
+							label Lien de téléchargement
+							input(type="text" ng-model="search.link")
+				.col-xs-2
+						md-button.md-raised.md-primary(
+							style="margin-top: 20px;" 
+							ng-disabled="!search.link"
+							ng-click="startDownload('movie')") Télécharger
+			div(ng-show="mediaType == 'other'")
+				.col-xs-10
+						md-input-container
+							label Lien de téléchargement
+							input(type="text" ng-model="search.link")
+				.col-xs-2
+						md-button.md-raised.md-primary(
+							style="margin-top: 20px;" 
+							ng-disabled="!search.link"
+							ng-click="startDownload('other')") Télécharger

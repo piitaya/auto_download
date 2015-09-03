@@ -12,11 +12,11 @@ angular.module('myApp', [
   $routeProvider.
     when('/downloads', {
       templateUrl: 'partials/downloads',
-      controller: 'DownloadsCtrl'
+      controller: 'DownloadsCtrl as ctrl'
     }).
     when('/search', {
       templateUrl: 'partials/search',
-      controller: 'SearchCtrl'
+      controller: 'SearchCtrl as ctrl'
     }).
     otherwise({
       redirectTo: '/downloads'

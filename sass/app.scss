@@ -27,3 +27,20 @@ md-fab-speed-dial {
 		}
 	}
 }
+
+.md-button.type-button {
+	.mdi {
+		color: grey; 
+		font-size: 60pt; 
+		height: auto;
+	}
+	&.active {
+		.mdi {
+			color: red;
+		}
+	}
+}
+
+label {
+	margin-bottom: 2px;
+}
