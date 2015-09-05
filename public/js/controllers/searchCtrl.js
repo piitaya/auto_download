@@ -1,4 +1,4 @@
-angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http', '$mdToast', 'searchService', 'taskService', function ($scope, $http, $mdToast, searchService, taskService) {
+angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http', '$mdToast', '$mdDialog', 'searchService', 'taskService', function ($scope, $http, $mdToast, $mdDialog, searchService, taskService) {
 	var self = this;
 	$scope.mediaType = null;
 	$scope.seasons = [];
@@ -100,9 +100,6 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 		return valid;
 	};
 	$scope.startDownload = function(type) {
-/*		var data = {
-
-		}*/
 		var datas = [];
 		if (type == "tv") {
 			for (var  i in $scope.search.selectedEpisodes) {
@@ -145,4 +142,73 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
             console.log('Erreur, aucun fichier');
         }
 	}
+
+	$scope.showDialog = function($event) {
+       	var parentEl = angular.element(document.body);
+       	$mdDialog.show({
+         	parent: parentEl,
+        	targetEvent: $event,
+         	template:
+	           '<md-dialog flex="66">' +
+	           '  <md-dialog-content>'+
+	           '	<md-input-container>' +
+	           '      <label>Liens (1 par ligne)</label>' +
+	           '	  <textarea ng-model="links" columns="1"></textarea>' +
+	           '    </md-input-container>' +
+	           '  </md-dialog-content>' +
+	           '  <div class="md-actions">' +
+	           '    <md-button ng-click="addLinks()" class="md-primary">' +
+	           '      Ajouter' +
+	           '    </md-button>' +
+	           '    <md-button ng-click="cancel()" class="md-primary">' +
+	           '      Annuler' +
+	           '    </md-button>' +
+	           '  </div>' +
+	           '</md-dialog>',
+        	locals: {
+           		episodes: $scope.search.selectedEpisodes
+         	},
+       		controller: DialogController
+      	}).then(function(links) {
+      		// Delete empty link
+	      	var trueLinks = [];
+	      	for (var i in links) {
+	      		if (links[i]) {
+	      			trueLinks.push(links[i]);
+	      		}
+	      	}
+	      	// Push link in fields
+	      	for (var i in trueLinks) {
+	      		if (i < $scope.search.selectedEpisodes.length) {
+	      			$scope.search.selectedEpisodes[i].link = trueLinks[i];
+	      		}
+	      		else {
+	      			$scope.search.selectedEpisodes.push({
+	      				episode: null,
+	      				link: trueLinks[i]
+	      			});
+	      		}
+	      	}
+      		$scope.selectedEpisodes
+	    }, function(err) {
+	      	console.log(err);
+	    });
+      	function DialogController($scope, $mdDialog, episodes) {
+      		$scope.links = "";
+      		for (var i in episodes) {
+      			if (episodes[i].link) {
+      				$scope.links += episodes[i].link;
+      				if (i < episodes.length - 1) {
+      					$scope.links += '\n';
+      				}
+      			}
+      		}
+	        $scope.addLinks = function() {
+	          	$mdDialog.hide($scope.links.split('\n'));
+	        }
+	        $scope.cancel = function() {
+	          	$mdDialog.cancel("Nothing to add !");
+	        }
+      	}
+    }
 }]);

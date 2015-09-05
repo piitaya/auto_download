@@ -56,6 +56,7 @@
 			style="margin-top: 20px;" 
 			ng-disabled="!isDownloadButtonValid()"
 			ng-click="startDownload('tv')") Télécharger
+		md-button.md-raised.md-primary(ng-click="showDialog()") Plusieurs liens
 	div(ng-show="search.selectedItem && mediaType == 'movie'" ng-cloak)
 		.row
 			.col-xs-10
