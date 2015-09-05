@@ -1,7 +1,8 @@
-@import "/bower_components/bootstrap/dist/css/bootstrap.min.css";
+@import "bootstrap";
 @import "/bower_components/angular-material/angular-material.css";
 @import "https://fonts.googleapis.com/css?family=RobotoDraft:300,400,500,700,400italic";
 @import "/bower_components/mdi/css/materialdesignicons.min.css";
+@import "bower_components/material-color/material-color";
 
 .md-toolbar-tools {
 	.md-button {
@@ -10,7 +11,7 @@
 }
 
 .md-success .md-bar {
-    background-color: green;
+    background-color: $clr-green;
 }
 
 md-radio-button.vertical {
@@ -18,25 +19,35 @@ md-radio-button.vertical {
 }
 
 md-fab-speed-dial {
-	md-fab-trigger {
-		.md-button {
-			md-icon {
-				color: white;
-				font-size: 20pt;
-			}
+	.md-button {
+		md-icon {
+			color: $clr-white;
+			font-size: 20pt;
 		}
 	}
 }
 
 .md-button.type-button {
 	.mdi {
-		color: grey; 
+		color: $clr-grey; 
 		font-size: 60pt; 
 		height: auto;
 	}
 	&.active {
-		.mdi {
-			color: red;
+		&.movie {
+			.mdi {
+				color: $clr-light-blue
+			}
+		}
+		&.tv {
+			.mdi {
+				color: $clr-purple
+			}
+		}
+		&.other {
+			.mdi {
+				color: $clr-green
+			}
 		}
 	}
 }

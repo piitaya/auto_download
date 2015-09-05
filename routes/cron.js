@@ -35,7 +35,6 @@ exports.process = function() {
                     Promise.all(promises).then(function(){
                         console.log(promises.length + " files processed!");
                     }, function(err) {
-                        console.log(err);
                     });
                 } else {
                     console.log('No file to process');
@@ -93,7 +92,7 @@ function getValidElements(tasks, files) {
     for (var i in tasks) {
         console.log(tasks[i].status)
         for (var j in files) {
-            if (tasks[i].id == files[j].taskId && tasks[i].status == "finished") {
+            if (tasks[i].id == files[j].taskId && tasks[i].status == "finished" && (files[j].getType() == "movie" || files[j].getType() == "tv")) {
                 elements.push({
                     file: files[j],
                     task: tasks[i],

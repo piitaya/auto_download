@@ -1,6 +1,6 @@
-angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http', 'searchService', function ($scope, $http, searchService) {
+angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http', '$mdToast', 'searchService', 'taskService', function ($scope, $http, $mdToast, searchService, taskService) {
 	var self = this;
-	$scope.mediaType = "tv";
+	$scope.mediaType = null;
 	$scope.seasons = [];
 	$scope.episodes = [];
 	
@@ -8,8 +8,7 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 		searchTextItem: null,
 		selectedItem: null,
 		selectedSeason: null,
-		selectedEpisode: null,
-		link: null
+		selectedEpisodes: null
 	}
 	$scope.autoCompleteLabel = null;
 
@@ -34,6 +33,7 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 	$scope.selectedItemChange = function() {
 		$scope.search.selectedSeason = null;
 		$scope.search.selectedEpisode = null;
+		$scope.search.selectedEpisodes = [];
 	};
 
 	// Query search
@@ -46,7 +46,7 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 	$scope.getSeasons = function() {
 		if ($scope.mediaType == 'tv') {
 			$scope.search.selectedSeason = null;
-			$scope.search.selectedEpisode = null;
+			$scope.clearEpisodes();
 			if ($scope.search.selectedItem && $scope.seasons != []) {
 				return searchService.getSeasons($scope.search.selectedItem.id).then(function(response) {
 					$scope.seasons = response.data.seasons;
@@ -57,6 +57,7 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 
 	$scope.getEpisodes = function() {
 		$scope.search.selectedEpisode = null;
+		$scope.resetEpisodes();
 		if ($scope.search.selectedItem && $scope.search.selectedSeason && $scope.episodes != []) {
 			return searchService.getEpisodes($scope.search.selectedItem.id, $scope.search.selectedSeason.season_number).then(function(response) {
 				$scope.episodes = response.data.episodes;
@@ -64,14 +65,84 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 		}
 	};
 
-	$scope.formattedName = function() {
-		if ($scope.search.selectedItem && $scope.search.selectedSeason && $scope.search.selectedEpisode) {
-			var season_number = $scope.search.selectedSeason.season_number > 9 ? $scope.search.selectedSeason.season_number : "0" + $scope.search.selectedSeason.season_number;
-			var episode_number = $scope.search.selectedEpisode.episode_number > 9 ? $scope.search.selectedEpisode.episode_number : "0" + $scope.search.selectedEpisode.episode_number;
-			return $scope.search.selectedItem.name + " - " + season_number + "x" + episode_number + " - " + $scope.search.selectedEpisode.name;
+	// Gestion du tableau d'épisodes
+	$scope.resetEpisodes = function() {
+		for (var i in $scope.search.selectedEpisodes) {
+			$scope.search.selectedEpisodes[i].episode = null;
 		}
 	};
 
-	$scope.selectType('tv');
+	$scope.clearEpisodes = function() {
+		$scope.search.selectedEpisodes = [{
+			episode: null,
+			link: null
+		}];
+	}
 
+	$scope.addEpisode = function() {
+		$scope.search.selectedEpisodes.push({
+			episode: null,
+			link: null
+		});
+	};
+
+	$scope.deleteEpisode = function(index) {
+		$scope.search.selectedEpisodes.splice(index, 1);
+	}
+
+	$scope.isDownloadButtonValid = function() {
+		var valid = true;
+		for (var i in $scope.search.selectedEpisodes) {
+			if (!$scope.search.selectedEpisodes[i].episode || !$scope.search.selectedEpisodes[i].link) {
+				valid = false
+			}
+		}
+		return valid;
+	};
+	$scope.startDownload = function(type) {
+/*		var data = {
+
+		}*/
+		var datas = [];
+		if (type == "tv") {
+			for (var  i in $scope.search.selectedEpisodes) {
+				datas.push({
+					url: $scope.search.selectedEpisodes[i].link,
+					type: type,
+					name: $scope.search.selectedItem.name,
+					title: $scope.search.selectedEpisodes[i].episode.name,
+					season: $scope.search.selectedSeason.season_number,
+					episode: $scope.search.selectedEpisodes[i].episode.episode_number
+				})
+			}
+		}
+		else {
+			datas = [{
+				url: $scope.search.link,
+				type: type
+			}];
+			if (type == "movie") {
+				datas[0].title = $scope.search.selectedItem.name;
+				datas[0].year = $scope.search.selectedItem.year;
+			}	
+		}
+		var promises = [];
+        for (var i in datas) {
+            promises.push(taskService.create(datas[i]));
+        }
+        if(promises.length>0){
+            Promise.all(promises).then(function(responses){
+                console.log(responses);
+				$mdToast.show(
+			      $mdToast.simple()
+					.content('Téléchargements ajoutés !')
+					.hideDelay(3000)
+				);
+			}, function(err) {
+				console.log(err);
+			});
+        } else {
+            console.log('Erreur, aucun fichier');
+        }
+	}
 }]);

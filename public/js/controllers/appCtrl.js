@@ -5,7 +5,6 @@ angular.module('myApp.controllers', []);
 angular.module('myApp.controllers')
 .controller('AppCtrl', ['$scope', '$http','$timeout', '$mdSidenav', '$mdUtil', function ($scope, $http, $timeout, $mdSidenav, $mdUtil) {
 	$scope.toggleSideNav = buildToggler('left');
-
     function buildToggler(navID) {
       var debounceFn =  $mdUtil.debounce(function(){
             $mdSidenav(navID)

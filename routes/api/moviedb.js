@@ -10,10 +10,12 @@ exports.searchMovie = function (req, res) {
         var movies = [];
         for (var i in response.results) {
             var result = response.results[i];
+            year =  result.release_date ? result.release_date.split("-")[0] : undefined;
             var movie = {
                 id: result.id,
                 name: result.original_title,
-                image: result.poster_path
+                image: result.poster_path,
+                year: year
             };
             movies.push(movie);
         }

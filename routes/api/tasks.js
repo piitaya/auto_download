@@ -62,6 +62,7 @@ exports.create = function(req, res) {
                             taskId: taskId,
                             completed: false
                         });
+                        // Add data
                         if (req.body.type == "tv") {
                             newFile.tv = {
                                 name: req.body.name,
@@ -76,25 +77,26 @@ exports.create = function(req, res) {
                                 year: req.body.year
                             }
                         }
+                        // Save file
+                        if (req.body.type == "tv" || req.body.type == "movie") {
+                            newFile.save().then(function(file) {
+                                res.send({
+                                    success: true,
+                                    file: file
+                                });
+                            },
+                            function(fileError) {
+                                res.send({
+                                    success: false,
+                                    error: fileError
+                                });
+                            });
+                        }
                         else {
                             res.send({
                                 success: true,
                             });
                         }
-                        console.log(newFile);
-                        console.log(newFile.getType())
-                        newFile.save().then(function(file) {
-                            res.send({
-                                success: true,
-                                file: file
-                            });
-                        },
-                        function(fileError) {
-                            res.send({
-                                success: false,
-                                error: fileError
-                            });
-                        });
                     }
                     else {
                         res.send({
