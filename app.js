@@ -21,6 +21,8 @@ global.__base = __dirname + '/';
 /**
  * Configuration
  */
+// Authenticator
+app.use(basicAuth('admin', 'password59'));
 
 // all environments
 app.set('port', process.env.PORT || 3000);
