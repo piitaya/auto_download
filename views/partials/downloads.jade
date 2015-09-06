@@ -1,26 +1,25 @@
 .container
 	.row
-		.col-md-5 Nom du fichier
-		.col-md-1 Statut
-		.col-md-2 Avancement
-		.col-md-1 Vitesse
-		.col-md-2 Taille
-		.col-md-1 Action
-	.row(ng-repeat="item in items track by $index" ng-cloak)
-		.col-md-5 {{item.task.title}}
-
-		.col-md-1(style="text-align: center;")
-			{{getElement(item.task, 'label')}}
-
-		.col-md-2(style="text-align: center;")
-			md-progress-linear(ng-class="getElement(item.task, 'progressColor')" md-mode="{{getElement(item.task, 'progressMode')}}" ng-value="100*item.task.additional.transfer.size_downloaded/item.task.size")
-
-		.col-md-1(style="text-align: center;")
-			span(ng-if="item.task.additional.transfer.speed_download > 0") {{item.task.additional.transfer.speed_download | bytes}}/s
-
-		.col-md-2(style="text-align: center;")
-			span {{item.task.additional.transfer.size_downloaded | bytes}}/{{item.task.size | bytes}}
-
-		.col-md-1(style="text-align: center;")
-			md-button.md-icon-button(ng-click="getElement(item.task, 'actionFunction')(item.task.id)")
-				md-icon(md-font-icon="{{getElement(item.task, 'actionIcon')}}" ng-class="getElement(item.task, 'actionIcon')" style="color: {{getElement(item.task, 'actionColor')}}; font-size: 30px;")
+		.col-xs-12.col-sm-6.col-lg-4(ng-repeat="item in items track by $index" ng-cloak)
+			.md-card.md-whiteframe-z2(style="margin-bottom: 1.875rem;")
+				.md-card-content(style="padding: 10px;")
+					h2.md-title.truncate(ng-if="item.type == 'tv'") Série: {{item.file.tv.name}}
+					p.truncate(ng-if="item.type == 'tv'") Saison {{item.file.tv.season}} Episode {{item.file.tv.episode}} - {{item.file.tv.title}}
+					h2.md-title.truncate(ng-if="item.type == 'movie'") Film
+					p.truncate(ng-if="item.type == 'movie'") {{item.file.movie.title}} ({{item.file.movie.year}})
+					md-progress-linear(
+						ng-class="getElement(item.task, 'progressColor')" 
+						md-mode="{{getElement(item.task, 'progressMode')}}" 
+						ng-value="100*item.task.additional.transfer.size_downloaded/item.task.size")
+					p(style="margin-top: 15px;") {{getElement(item.task, 'label')}}
+					p.truncate {{item.task.title}}
+					.row(style="font-size: 9pt;")
+						.col-xs-5(style="text-align: left;")
+							span(ng-if="item.task.additional.transfer.speed_download > 0") {{item.task.additional.transfer.speed_download | bytes}}/s
+						.col-xs-7(style="text-align: right;")
+							span {{item.task.additional.transfer.size_downloaded | bytes}}/{{item.task.size | bytes}}
+				.md-actions(style="text-align: right;")
+					md-button.md-icon-button(ng_if="getElement(item.task, 'actionFunction')" ng-click="getElement(item.task, 'actionFunction')(item.task.id)")
+						md-icon(md-font-icon="{{getElement(item.task, 'actionIcon')}}" ng-class="getElement(item.task, 'actionIcon')" style="font-size: 16pt;")
+					md-button.md-icon-button
+						md-icon(md-font-icon="mdi mdi-delete" style="font-size: 16pt;")		

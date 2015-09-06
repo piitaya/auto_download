@@ -2,22 +2,21 @@ extends layout
 
 block body
 	div(ng-controller='AppCtrl')
-		md-content
-			md-toolbar
-				.md-toolbar-tools
-					md-button.md-icon-button(aria-label='Settings')
-						md-icon(md-font-icon='mdi mdi-menu' ng-click="toggleSideNav()")
-					h2
-						span Auto Download
-					span(flex='')
-					md-button.md-icon-button(aria-label='More')
-						md-icon(md-font-icon='mdi mdi-dots-vertical')
-		md-sidenav.md-sidenav-left.md-whiteframe-z2(md-component-id='left')
+		md-toolbar.md-sidenav-left.md-whiteframe-z4
+			.md-toolbar-tools
+				md-button.md-icon-button(aria-label='Navigation' ng-click="toggleSideNav()")
+					md-icon(md-font-icon='mdi mdi-menu')
+				h2
+					span Auto Download
+				span(flex='')
+				md-button.md-icon-button(aria-label='More')
+					md-icon(md-font-icon='mdi mdi-dots-vertical')
+		md-sidenav.md-sidenav-left.md-whiteframe-z4(md-component-id='navbar')
 			md-toolbar.md-theme-indigo
 				h1.md-toolbar-tools Navigation
 			md-list(ng-controller="SideNavCtrl")
 				//- md-subheader.md-no-sticky Lien
-				md-list-item(ng-click='navigateTo(link.href, $event)', ng-repeat='link in links')
+				md-list-item(ng-click='navigateTo(link.href)', ng-repeat='link in links')
 					md-icon.navbar-icon(md-font-icon="mdi {{link.icon}}")
 					p {{link.name}} 
 				//- md-subheader.md-no-sticky Options

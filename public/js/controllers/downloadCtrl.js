@@ -43,8 +43,7 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 			label: "Téléchargement",
 			progressColor: "",
 			progressMode: "determinate",
-			actionIcon: "mdi mdi-pause-circle",
-			actionColor: "red",
+			actionIcon: "mdi mdi-pause",
 			actionFunction: $scope.pauseTask
 		},
 		finished: {
@@ -52,15 +51,13 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 			progressColor: "md-success",
 			progressMode: "determinate",
 			actionIcon: "mdi mdi-checkbox-marked-circle",
-			actionColor: "green",
 			actionFunction: undefined
 		},
 		paused: {
 			label: "En pause",
 			progressColor: "md-warn",
 			progressMode: "determinate",
-			actionIcon: "mdi mdi-play-circle",
-			actionColor: "blue",
+			actionIcon: "mdi mdi-play",
 			actionFunction: $scope.resumeTask
 		},
 		default: {
@@ -82,7 +79,7 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 
 	$interval(function() {
 		$scope.listTaks();
-	}, 5000);
+	}, 2000);
 	
 }]);
 

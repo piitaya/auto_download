@@ -25,12 +25,14 @@ exports.getAll = function (req, res) {
                 var items = [];
                 for (var i in tasks) {
                     for (var j in files) {
-                        items.push({
-                            file: files[j],
-                            task: tasks[i],
-                            type: files[j].getType()
-                        })
-                        break;
+                        if (tasks[i].id == files[j].taskId) {
+                                items.push({
+                                file: files[j],
+                                task: tasks[i],
+                                type: files[j].getType()
+                            });
+                            break;
+                        }
                     }
                 }
                 res.send(

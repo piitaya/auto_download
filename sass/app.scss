@@ -8,10 +8,23 @@
 button:focus {outline:0;}
 md-icon:focus {outline:0;}
 
+.truncate {
+  width: 100%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
 // SideNav
 .md-toolbar-tools {
+	position: fixed;
+	top: 0;
 	.md-button {
 		font-size: 18pt;
+		//Fix for button that stay focused...
+		&.md-focused {
+			background: none;
+		}
 	}
 }
 

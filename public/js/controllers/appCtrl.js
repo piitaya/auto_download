@@ -4,12 +4,12 @@ angular.module('myApp.controllers', []);
 
 angular.module('myApp.controllers')
 .controller('AppCtrl', ['$scope', '$http', '$timeout', '$mdSidenav', '$mdUtil', function ($scope, $http, $timeout, $mdSidenav, $mdUtil) {
-	$scope.toggleSideNav = buildToggler('left');
-  function buildToggler(navID) {
+	$scope.toggleSideNav = buildToggler();
+  function buildToggler() {
     var debounceFn =  $mdUtil.debounce(function(){
-          $mdSidenav(navID)
+          $mdSidenav('navbar')
             .toggle();
-        },0);
+        },100);
     return debounceFn;
   }
 }])
@@ -25,6 +25,6 @@ angular.module('myApp.controllers')
   };
 
   $scope.close = function () {
-    $mdSidenav('left').close();
+    $mdSidenav('navbar').close();
   };
 }]);
