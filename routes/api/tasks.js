@@ -17,11 +17,37 @@ var syno = new Syno({
 
 
 exports.getAll = function (req, res) {
-	syno.dl.listTasks({additional: "detail,transfer"}, function(error, response) {
-        res.contentType('json');
-		res.send(
-			response
-		);
+    res.contentType('json');
+	syno.dl.listTasks({additional: "detail,transfer"}, function(listError, listResponse) {
+        if (!listError) {
+            var tasks = listResponse.tasks;
+            File.find({}).then(function(files) {
+                var items = [];
+                for (var i in tasks) {
+                    for (var j in files) {
+                        items.push({
+                            file: files[j],
+                            task: tasks[i],
+                            type: files[j].getType()
+                        })
+                        break;
+                    }
+                }
+                res.send(
+                    items
+                );
+            },
+            function(err) {
+                res.send({
+                    err: err
+                });
+            });
+        }
+        else {
+            res.send({
+                err: listError
+            });
+        }
 	});
 };
 

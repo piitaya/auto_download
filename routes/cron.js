@@ -99,6 +99,7 @@ function getValidElements(tasks, files) {
                     srcFileName: tasks[i].title,
                     destFileName: getFileName(files[j]) + "." + getExtension(tasks[i].title)
                 });
+                break;
             }
         }
     }

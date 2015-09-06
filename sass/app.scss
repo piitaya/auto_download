@@ -4,27 +4,33 @@
 @import "/bower_components/mdi/css/materialdesignicons.min.css";
 @import "bower_components/material-color/material-color";
 
+//Global
+button:focus {outline:0;}
+md-icon:focus {outline:0;}
+
+// SideNav
 .md-toolbar-tools {
 	.md-button {
 		font-size: 18pt;
 	}
 }
 
+.md-sidenav-left.md-closed-add,
+.md-sidenav-left.md-closed-remove {
+    transition: 0.2s ease-in all;
+}
+
+.navbar-icon {
+	font-size: 16pt;
+}
+
+// Others
 .md-success .md-bar {
     background-color: $clr-green;
 }
 
 md-radio-button.vertical {
 	display: inline-block;
-}
-
-md-fab-speed-dial {
-	.md-button {
-		md-icon {
-			color: $clr-white;
-			font-size: 20pt;
-		}
-	}
 }
 
 .md-button.type-button {

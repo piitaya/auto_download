@@ -14,30 +14,13 @@ block body
 						md-icon(md-font-icon='mdi mdi-dots-vertical')
 		md-sidenav.md-sidenav-left.md-whiteframe-z2(md-component-id='left')
 			md-toolbar.md-theme-indigo
-				h1.md-toolbar-tools Sidenav Left
-			md-content(layout-padding ng-controller="SideNavCtrl")
-				a(href='#' ng-click="close()") Test 1
-				a(href='#') Test 2
-				a(href='#') Test 3
+				h1.md-toolbar-tools Navigation
+			md-list(ng-controller="SideNavCtrl")
+				//- md-subheader.md-no-sticky Lien
+				md-list-item(ng-click='navigateTo(link.href, $event)', ng-repeat='link in links')
+					md-icon.navbar-icon(md-font-icon="mdi {{link.icon}}")
+					p {{link.name}} 
+				//- md-subheader.md-no-sticky Options
+
 		md-content(layout-padding)
 			div(ng-view)
-
-			div
-				.container
-					| Angular seed app: v
-					span(app-version)
-		div(style="position: absolute; right: 20px; bottom: 20px;" layout='row', flex='')
-			md-fab-speed-dial.md-scale(md-open="isOpen", md-direction='up')
-				md-fab-trigger
-					md-button.md-fab.md-warn(aria-label='menu')
-						md-icon(md-font-icon="mdi mdi-plus")
-				md-fab-actions
-					md-button.md-fab.md-raised.md-mini(aria-label='Série')
-						md-tooltip(md-direction="left") Série
-						md-icon(md-font-icon="mdi mdi-television" style="color: grey; font-size: 24px;")
-					md-button.md-fab.md-raised.md-mini(aria-label='Film')
-						md-tooltip(md-direction="left") Film
-						md-icon(md-font-icon="mdi mdi-filmstrip" style="color: grey; font-size: 24px;")
-					md-button.md-fab.md-raised.md-mini(aria-label='Autre')
-						md-tooltip(md-direction="left") Autre
-						md-icon(md-font-icon="mdi mdi-download" style="color: grey; font-size: 24px;")

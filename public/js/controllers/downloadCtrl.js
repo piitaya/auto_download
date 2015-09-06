@@ -10,7 +10,7 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 			url: '/api/tasks'
 		}).
 		then(function (response) {
-			$scope.data = response.data;
+			$scope.items = response.data;
 		});
 	};
 
@@ -82,7 +82,7 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 
 	$interval(function() {
 		$scope.listTaks();
-	}, 1000);
+	}, 5000);
 	
 }]);
 
