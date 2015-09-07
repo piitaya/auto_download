@@ -13,7 +13,9 @@ var express = require('express'),
   path = require('path'),
   cookieParser = require('cookie-parser'),
   sassMiddleware = require('node-sass-middleware'),
-  db = require('./model/db');
+  db = require('./model/db'),
+  config = require('config'),
+  basicAuth = require('basic-auth-connect');
 var app = module.exports = express();
 
 global.__base = __dirname + '/';
@@ -22,7 +24,12 @@ global.__base = __dirname + '/';
  * Configuration
  */
 // Authenticator
-app.use(basicAuth('admin', 'password59'));
+if (config.get('BasicAuth.enable')) {
+  var user = config.get('BasicAuth.user');
+  var password = config.get('BasicAuth.password')
+  app.use(basicAuth(user, password)); 
+}
+
 
 // all environments
 app.set('port', process.env.PORT || 3000);

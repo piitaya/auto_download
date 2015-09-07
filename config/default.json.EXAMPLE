@@ -21,11 +21,18 @@
   "MongoDB": {
     "uri": "mongodb://<dbuser>:<dbpassword>@<dbhost>:<dbport>/<dbdatabase>"
   },
+  // Folder for process
   "Process": {
     "folder": {
       "downloads": "",
       "tv": "",
       "movie": ""
     }
+  },
+  // Basic Auth config
+  "BasicAuth": {
+    "enable": true|false,
+    "user": "user",
+    "password": "password"
   }
 }
