@@ -2,7 +2,7 @@ extends layout
 
 block body
 	div(ng-controller='AppCtrl')
-		md-toolbar.md-sidenav-left.md-whiteframe-z4
+		md-toolbar.md-sidenav-left.md-whiteframe-z4.fixed-top
 			.md-toolbar-tools
 				md-button.md-icon-button(aria-label='Navigation' ng-click="toggleSideNav()")
 					md-icon(md-font-icon='mdi mdi-menu')
@@ -21,5 +21,5 @@ block body
 					p {{link.name}} 
 				//- md-subheader.md-no-sticky Options
 
-		md-content(layout-padding)
+		md-content.padding-top(layout-padding)
 			div(ng-view)

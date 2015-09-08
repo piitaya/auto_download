@@ -16,9 +16,11 @@ md-icon:focus {outline:0;}
 }
 
 // SideNav
-.md-toolbar-tools {
+.fixed-top {
 	position: fixed;
 	top: 0;
+}
+.md-toolbar-tools {
 	.md-button {
 		font-size: 18pt;
 		//Fix for button that stay focused...
@@ -26,6 +28,9 @@ md-icon:focus {outline:0;}
 			background: none;
 		}
 	}
+}
+.padding-top {
+	padding-top: 64px + 10px; //Navbar height + padding 10px
 }
 
 .md-sidenav-left.md-closed-add,
