@@ -20,12 +20,11 @@ var folder = config.get('Process.folder');
 exports.process = function() {
     syno.dl.listTasks({}, function(listError, listResponse) {
         if (!listError) {
-            console.log("List tasks: done!");
+            console.log("General process: listing tasks...");
             var tasks = listResponse.tasks;
             File.find({completed: false}).then(function(files) {
-                console.log("List files: done!");
+                console.log("General process: listing files...");
                 var elements = getValidElements(tasks, files);
-                console.log(elements);
                 //Rename Files
                 var promises = [];
                 for (var i in elements) {
@@ -33,55 +32,44 @@ exports.process = function() {
                 }
                 if(promises.length>0){
                     Promise.all(promises).then(function(){
-                        console.log(promises.length + " files processed!");
+                        console.log("General process: " + promises.length + " file(s) processed!");
                     }, function(err) {
+                        console.log(err);
                     });
                 } else {
-                    console.log('No file to process');
+                    console.log('General process: no file to process.');
                 }
             }, function(fileError) {
-                console.log("error while listing file tasks : " + fileError);
+                console.log("General process: error while listing file tasks : " + fileError);
             });
         }
         else {
-            console.log("error while listing synology tasks");
+            console.log("General process: error while listing synology tasks");
         }
     });
 }
 
 function process(element) {
     return new Promise(function(resolve, reject) {
+        var taskName = element.destFileName;
         renameFile(element).then(function() {
-            console.log("File renamed !")
+            console.log(taskName + ": file renamed!")
             return createPath(element);
-        },
-        function(err) {
-            console.log('Error while renaming file...');
-            reject(err);
         })
         .then(function(path) {
-            console.log("Path created !")
+            console.log(taskName + ": path created!")
             return moveFile(element, path);
-        },
-        function(err) {
-            console.log('Error while creating path...');
-            reject(err);
         })
         .then(function() {
-            console.log("File moved !")
+            console.log(taskName + ": file moved!")
             element.file.completed = true;
-            return element.file.save()
-        },
-        function(err) {
-            console.log('Error while moving file...');
-            reject(err);
+            return element.file.save();
         })
         .then(function() {
-            console.log("File saved !")
+            console.log(taskName + ": file saved!")
             resolve(element);
-        },
-        function(err) {
-            console.log('Error while saving file...');
+        })
+        .catch(function(err) {
             reject(err);
         });
     });
@@ -90,14 +78,14 @@ function process(element) {
 function getValidElements(tasks, files) {
     var elements = [];
     for (var i in tasks) {
-        console.log(tasks[i].status)
         for (var j in files) {
             if (tasks[i].id == files[j].taskId && tasks[i].status == "finished" && (files[j].getType() == "movie" || files[j].getType() == "tv")) {
+                var file = sanitizeFile(files[j]);
                 elements.push({
-                    file: files[j],
+                    file: file,
                     task: tasks[i],
                     srcFileName: tasks[i].title,
-                    destFileName: getFileName(files[j]) + "." + getExtension(tasks[i].title)
+                    destFileName: getFileName(file) + "." + getExtension(tasks[i].title)
                 });
                 break;
             }
@@ -146,7 +134,6 @@ function createFolder(folder_path, name) {
             name: name
         }, function(err, response) {
             if (err) {
-                console.log(err);
                 reject(err);
             }
             else {
@@ -159,17 +146,13 @@ function createFolder(folder_path, name) {
 function createPath(element) {
     return new Promise(function(resolve, reject) {
         if (element.file.getType() == "tv") {
-            console.log(folder.tv + " - " + element.file.tv.name);
             createFolder(folder.tv, element.file.tv.name).then(function(tvPath) {
-                console.log(tvPath);
                 return createFolder(tvPath, "Saison " + element.file.tv.season);
-            }, function(err) {
-                console.log('Error while creating tv show name folder');
-                reject(err);
-            }).then(function(fullPath) {
+            })
+            .then(function(fullPath) {
                 resolve(fullPath);
-            }, function(err) {
-                console.log('Error while creating season name folder');
+            })
+            .catch(function(err) {
                 reject(err);
             });
         }
@@ -177,7 +160,7 @@ function createPath(element) {
             resolve(folder.movie);
         }
         else {
-            reject();
+            reject("It's not a movie or a tv! No need to move the file.");
         }
     });
 }
@@ -194,10 +177,24 @@ function getFileName(file) {
         return file.movie.title + " (" + file.movie.year + ")";
     }
     else {
-        return ""
+        return "";
     }
 }
 
 function getExtension(fileName) {
     return fileName.split(".")[fileName.split(".").length - 1];
+}
+
+function sanitizeFile(file) {
+    var replaceChar = "";
+    var regEx = new RegExp('[,/\:*?""<>|]', 'g');
+
+    if (file.getType() == "tv") {
+        file.tv.name = file.tv.name.replace(regEx, replaceChar);
+        file.tv.title = file.tv.title.replace(regEx, replaceChar);
+    }
+    if (file.getType() == "movie") {
+        file.movie.title = file.movie.title.replace(regEx, replaceChar);
+    }
+    return file;
 }
