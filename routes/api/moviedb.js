@@ -51,6 +51,7 @@ exports.searchTv = function (req, res) {
             res.send(
                 {results: tvs}
             );
+        }
         else {
             res.send(
                 {results: []}
@@ -103,6 +104,7 @@ exports.getSeasons = function (req, res) {
             res.send(
                 {seasons: seasons}
             );
+        }
         else {
             res.send(
                 {seasons: []}
@@ -128,6 +130,7 @@ exports.getEpisodes = function (req, res) {
             res.send(
                 {episodes: episodes}
             );
+        }
         else {
             res.send(
                 {episodes: []}
