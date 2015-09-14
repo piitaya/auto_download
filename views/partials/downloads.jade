@@ -20,6 +20,6 @@
 							span {{item.task.additional.transfer.size_downloaded | bytes}}/{{item.task.size | bytes}}
 				.md-actions(style="text-align: right;")
 					md-button.md-icon-button(ng_if="getElement(item.task, 'actionFunction')" ng-click="getElement(item.task, 'actionFunction')(item.task.id)")
-						md-icon(md-font-icon="{{getElement(item.task, 'actionIcon')}}" ng-class="getElement(item.task, 'actionIcon')" style="font-size: 16pt;")
+						md-icon(md-font-icon="{{getElement(item.task, 'actionIcon')}}" ng-class="getElement(item.task, 'actionIcon')" style="font-size: 16pt;" aria-label="action")
 					md-button.md-icon-button
-						md-icon(md-font-icon="mdi mdi-delete" style="font-size: 16pt;")		
+						md-icon(md-font-icon="mdi mdi-delete" style="font-size: 16pt;" aria-label="delete")

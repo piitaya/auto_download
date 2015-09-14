@@ -2,6 +2,7 @@ extends layout
 
 block body
 	div(ng-controller='AppCtrl')
+		material-preloader(position="top" height="5px" col1='#159756' col2='#da4733' col3='#3b78e7' col4='#fdba2c')
 		md-toolbar.md-sidenav-left.md-whiteframe-z4.fixed-top
 			.md-toolbar-tools
 				md-button.md-icon-button(aria-label='Navigation' ng-click="toggleSideNav()")
@@ -20,6 +21,8 @@ block body
 					md-icon.navbar-icon(md-font-icon="mdi {{link.icon}}")
 					p {{link.name}} 
 				//- md-subheader.md-no-sticky Options
-
 		md-content.padding-top(layout-padding)
 			div(ng-view)
+		.overlay(ng-show="$root.loader" class="animate-shiny")
+			.spinner.md-whiteframe-z4
+				md-progress-circular(md-mode="indeterminate" md-diameter="50")

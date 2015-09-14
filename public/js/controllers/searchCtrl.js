@@ -1,4 +1,4 @@
-angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http', '$mdToast', '$mdDialog', 'searchService', 'taskService', function ($scope, $http, $mdToast, $mdDialog, searchService, taskService) {
+angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$rootScope', '$http', '$mdToast', '$mdDialog', 'searchService', 'taskService', function ($scope, $rootScope, $http, $mdToast, $mdDialog, searchService, taskService) {
 	var self = this;
 	$scope.mediaType = null;
 	$scope.seasons = [];
@@ -100,6 +100,7 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
 		return valid;
 	};
 	$scope.startDownload = function(type) {
+		$rootScope.loader = true;
 		var datas = [];
 		if (type == "tv") {
 			for (var  i in $scope.search.selectedEpisodes) {
@@ -130,6 +131,7 @@ angular.module('myApp.controllers').controller('SearchCtrl', ['$scope', '$http',
         if(promises.length>0){
             Promise.all(promises).then(function(responses){
                 console.log(responses);
+                $rootScope.loader = false;
 				$mdToast.show(
 			      $mdToast.simple()
 					.content('Téléchargements ajoutés !')

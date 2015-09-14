@@ -2,8 +2,11 @@
   "name": "auto_download",
   "version": "0.0.1",
   "dependencies": {
-  	"angular-material": "^0.10.1",
-  	"angular-route": "^1.4.3",
+  	"angular": "^1.4.4",
+  	"angular-animate": "^1.4.4",
+  	"angular-aria": "^1.4.4",
+  	"angular-route": "^1.4.4",
+  	"angular-material": "^0.11.0",
   	"bootstrap": "^4.0.0-alpha",
   	"material-color": "^2.2.0",
   	"mdi": "^1.1.70"
