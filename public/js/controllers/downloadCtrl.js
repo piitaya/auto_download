@@ -77,9 +77,15 @@ angular.module('myApp.controllers').controller('DownloadsCtrl', ['$scope', '$htt
 		$scope.listTaks();
 	});
 
-	$interval(function() {
+	$scope.listTasksTimer = $interval(function() {
 		$scope.listTaks();
 	}, 2000);
+
+	$scope.$on("$destroy", function(event) {
+		if (angular.isDefined($scope.listTasksTimer)) {
+			$interval.cancel($scope.listTasksTimer);
+		}
+	});
 	
 }]);
 

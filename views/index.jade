@@ -23,6 +23,6 @@ block body
 				//- md-subheader.md-no-sticky Options
 		md-content.padding-top(layout-padding)
 			div(ng-view)
-		.overlay(ng-show="$root.loader" class="animate-shiny")
+		.overlay.cssFade(ng-show="$root.loader")
 			.spinner.md-whiteframe-z4
 				md-progress-circular(md-mode="indeterminate" md-diameter="50")
