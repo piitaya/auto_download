@@ -1,17 +1,7 @@
 extends layout
 
 block body
-	div(ng-controller='AppCtrl')
-		material-preloader(position="top" height="5px" col1='#159756' col2='#da4733' col3='#3b78e7' col4='#fdba2c')
-		md-toolbar.md-sidenav-left.md-whiteframe-z4.fixed-top
-			.md-toolbar-tools
-				md-button.md-icon-button(aria-label='Navigation' ng-click="toggleSideNav()")
-					md-icon(md-font-icon='mdi mdi-menu')
-				h2
-					span Auto Download
-				span(flex='')
-				md-button.md-icon-button(aria-label='More')
-					md-icon(md-font-icon='mdi mdi-dots-vertical')
+	div(layout="column" style="height: 100%")
 		md-sidenav.md-sidenav-left.md-whiteframe-z4(md-component-id='navbar')
 			md-toolbar.md-theme-indigo
 				h1.md-toolbar-tools Navigation
@@ -21,8 +11,18 @@ block body
 					md-icon.navbar-icon(md-font-icon="mdi {{link.icon}}")
 					p {{link.name}} 
 				//- md-subheader.md-no-sticky Options
-		md-content.padding-top(layout-padding)
-			div(ng-view)
+		div(flex layout="column")
+			md-toolbar.md-sidenav-left.md-whiteframe-z4(flex)
+				.md-toolbar-tools
+					md-button.md-icon-button(aria-label='Navigation' ng-click="toggleSideNav()")
+						md-icon(md-font-icon='mdi mdi-menu')
+					h2
+						span Auto Download
+					span(flex='')
+					md-button.md-icon-button(aria-label='More')
+						md-icon(md-font-icon='mdi mdi-dots-vertical')
+			md-content(layout-padding flex md-scroll-y)
+				div(ng-view)
 		.overlay.cssFade(ng-show="$root.loader")
 			.spinner.md-whiteframe-z4
 				md-progress-circular(md-mode="indeterminate" md-diameter="50")
