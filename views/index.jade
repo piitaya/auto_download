@@ -12,7 +12,7 @@ block body
 					p {{link.name}} 
 				//- md-subheader.md-no-sticky Options
 		div(flex layout="column")
-			md-toolbar.md-sidenav-left.md-whiteframe-z4(flex)
+			md-toolbar.md-sidenav-left.md-whiteframe-z4
 				.md-toolbar-tools
 					md-button.md-icon-button(aria-label='Navigation' ng-click="toggleSideNav()")
 						md-icon(md-font-icon='mdi mdi-menu')
@@ -21,7 +21,7 @@ block body
 					span(flex='')
 					md-button.md-icon-button(aria-label='More')
 						md-icon(md-font-icon='mdi mdi-dots-vertical')
-			md-content(layout-padding flex md-scroll-y)
+			md-content(layout-padding flex)
 				div(ng-view)
 		.overlay.cssFade(ng-show="$root.loader")
 			.spinner.md-whiteframe-z4
