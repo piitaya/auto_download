@@ -11,22 +11,20 @@
 				md-icon(md-font-icon="mdi mdi-download")
 	
 	div(ng-if="mediaType == 'tv' || mediaType == 'movie'")
-		.row
-			.col-xs-12
-				md-autocomplete(
-					style="margin-top: 16px; margin-bottom: 16px;"
-					md-no-cache="true"
-					md-selected-item="search.selectedItem"
-					md-search-text="search.searchText"
-					md-items="item in querySearch(search.searchText)"
-					md-item-text="item.name"
-					md-selected-item-change="getSeasons()"
-					placeholder="{{autoCompleteLabel}}")
-					md-item-template
-						img(ng-if="item.image" style="height: 40px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{item.image}}")
-						img(ng-if="!item.image" style="height: 40px; width: auto;" ng-src="images/movie-default.jpg")
-						span(ng-if="item.year") {{item.name}} ({{item.year}})
-						span(ng-if="!item.year") {{item.name}}
+		md-autocomplete(
+			style="margin-top: 16px; margin-bottom: 16px;"
+			md-no-cache="true"
+			md-selected-item="search.selectedItem"
+			md-search-text="search.searchText"
+			md-items="item in querySearch(search.searchText)"
+			md-item-text="item.name"
+			md-selected-item-change="getSeasons()"
+			placeholder="{{autoCompleteLabel}}")
+			md-item-template
+				img(ng-if="item.image" style="height: 40px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{item.image}}")
+				img(ng-if="!item.image" style="height: 40px; width: auto;" ng-src="images/movie-default.jpg")
+				span(ng-if="item.year") {{item.name}} ({{item.year}})
+				span(ng-if="!item.year") {{item.name}}
 
 	div(ng-show="search.selectedItem && mediaType == 'tv'")
 		h2 {{search.selectedItem.name}}
