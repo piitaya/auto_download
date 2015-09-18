@@ -8,7 +8,7 @@ angular.module('myApp', [
   'myApp.services',
   'myApp.directives'
 ])
-.config(function ($routeProvider, $locationProvider) {
+.config(function ($routeProvider, $locationProvider, $mdThemingProvider) {
   $routeProvider.
     when('/downloads', {
       templateUrl: 'partials/downloads',
@@ -23,4 +23,10 @@ angular.module('myApp', [
     });
 
   $locationProvider.html5Mode(true);
+
+  $mdThemingProvider.theme('default')
+  .primaryPalette('deep-purple')
+  .accentPalette('red');
+
+  console.log($mdThemingProvider.theme('default'));
 });

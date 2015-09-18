@@ -1,39 +1,37 @@
-.container
-	.row
-		.col-xs-4
+.layout-max-width
+	div(layout="row")
+		div(flex="33")
 			md-button.type-button.movie(layout-fill style="margin: 0" ng-click="selectType('movie')" ng-class="mediaType == 'movie' ? 'active' : ''")
 				md-icon(md-font-icon="mdi mdi-filmstrip")
-		.col-xs-4
+		div(flex="34")
 			md-button.type-button.tv(layout-fill style="margin: 0" ng-click="selectType('tv')" ng-class="mediaType == 'tv' ? 'active' : ''")
 				md-icon(md-font-icon="mdi mdi-television")
-		.col-xs-4
+		div(flex="33")
 			md-button.type-button.other(layout-fill style="margin: 0" ng-click="selectType('other')" ng-class="mediaType == 'other' ? 'active' : ''")
 				md-icon(md-font-icon="mdi mdi-download")
 	
 	div(ng-if="mediaType == 'tv' || mediaType == 'movie'")
-		.row
-			.col-xs-12
-				md-autocomplete(
-					style="margin-top: 16px; margin-bottom: 16px;"
-					md-no-cache="true"
-					md-selected-item="search.selectedItem"
-					md-search-text="search.searchText"
-					md-items="item in querySearch(search.searchText)"
-					md-item-text="item.name"
-					md-selected-item-change="getSeasons()"
-					placeholder="{{autoCompleteLabel}}")
-					md-item-template
-						img(ng-if="item.image" style="height: 40px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{item.image}}")
-						img(ng-if="!item.image" style="height: 40px; width: auto;" ng-src="images/movie-default.jpg")
-						span(ng-if="item.year") {{item.name}} ({{item.year}})
-						span(ng-if="!item.year") {{item.name}}
+		md-autocomplete(
+			style="margin-top: 16px; margin-bottom: 16px;"
+			md-no-cache="true"
+			md-selected-item="search.selectedItem"
+			md-search-text="search.searchText"
+			md-items="item in querySearch(search.searchText)"
+			md-item-text="item.name"
+			md-selected-item-change="getSeasons()"
+			placeholder="{{autoCompleteLabel}}")
+			md-item-template
+				img(ng-if="item.image" style="height: 40px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{item.image}}")
+				img(ng-if="!item.image" style="height: 40px; width: auto;" ng-src="images/movie-default.jpg")
+				span(ng-if="item.year") {{item.name}} ({{item.year}})
+				span(ng-if="!item.year") {{item.name}}
 
 	div(ng-show="search.selectedItem && mediaType == 'tv'")
 		h2 {{search.selectedItem.name}}
 		img(ng-if="search.selectedItem.image" style="height: 250px; width: auto;" ng-src="https://image.tmdb.org/t/p/w185{{search.selectedItem.image}}")
 		img(ng-if="!search.selectedItem.image" style="height: 250px; width: auto;" ng-src="images/movie-default.jpg")
-		.row(ng-show="search.selectedItem")
-			.col-md-3.col-xs-12
+		div(layout="row" layout-align="space-between" layout-wrap ng-show="search.selectedItem")
+			div(flex="30" flex-sm="100")
 				md-input-container
 					label Saison
 					md-select(ng-model="search.selectedSeason"  ng-change="getEpisodes()")
@@ -41,18 +39,18 @@
 							md-option(ng-repeat="season in seasons" ng-value="season" ng-if="season.season_number > 0") Saison {{season.season_number}} ({{season.air_date | date:'yyyy'}})
 						md-optgroup(label="Autres")
 							md-option(ng-repeat="season in seasons" ng-value="season" ng-if="season.season_number == 0") Saison {{season.season_number}} ({{season.air_date | date:'yyyy'}})
-			.col-md-9.col-xs-12
-				.row(ng-repeat="item in search.selectedEpisodes track by $index" )
-					.col-sm-5.col-xs-12
+			div(flex="67" flex-sm="100")
+				div(layout="row" layout-align="space-between" ng-repeat="item in search.selectedEpisodes track by $index" )
+					div(flex="40" flex-md="40" flex-sm="35")
 						md-input-container
 							label Episode
 							md-select(ng-model="search.selectedEpisodes[$index].episode" placeholder="Episode" ng-disabled="!search.selectedSeason")
 								md-option(ng-repeat="episode in episodes" ng-value="episode") Episode {{episode.episode_number}} : {{episode.name}} ({{episode.air_date | date:'dd/MM/yyyy'}})
-					.col-sm-6.col-xs-9
+					div(flex="45" flex-md="40" flex-sm="40")
 						md-input-container
-							label Lien de téléchargement
+							label.truncate Lien de téléchargement
 							input(type="text" ng-model="search.selectedEpisodes[$index].link")
-					.col-sm-1.col-xs-3
+					div(flex="10" flex-md="15" flex-sm="20")
 						md-button.md-icon-button(ng-if="$index != 0" ng-click="deleteEpisode($index)" aria-label="Delete" style="font-size: 20pt; margin-top: 10px;")
 							md-icon(md-font-icon="mdi mdi-delete")
 		div(style="text-align: right;")
